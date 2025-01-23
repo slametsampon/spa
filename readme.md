@@ -36,14 +36,14 @@
   - [**Pendekatan 1: Menggunakan esbuild CLI**](#pendekatan-1-menggunakan-esbuild-cli)
     - [**Kelebihan:**](#kelebihan)
     - [**Kekurangan:**](#kekurangan)
-    - [**Rekomendasi untuk Pengembangan SPA**](#rekomendasi-untuk-pengembangan-spa)
+    - [**Rekomendasi untuk Pengembangan spa**](#rekomendasi-untuk-pengembangan-spa)
   - [**Pendekatan 2: Menggunakan API `esbuild.build`**](#pendekatan-2-menggunakan-api-esbuildbuild)
     - [**Kapan `esbuild.build` Digunakan?**](#kapan-esbuildbuild-digunakan)
     - [**Contoh File Konfigurasi `esbuild.config.js`**](#contoh-file-konfigurasi-esbuildconfigjs)
     - [**Kelebihan:**](#kelebihan-1)
     - [**Kekurangan:**](#kekurangan-1)
   - [**Komparasi dan Rekomendasi esbuild**](#komparasi-dan-rekomendasi-esbuild)
-  - [**Rekomendasi untuk Proyek SPA**](#rekomendasi-untuk-proyek-spa)
+  - [**Rekomendasi untuk Proyek spa**](#rekomendasi-untuk-proyek-spa)
 - [**Referensi**](#referensi)
 
 ---
@@ -52,11 +52,11 @@
 
 Halo para praktisi dan penggiat teknologi! 👋
 
-Pernahkah Anda ingin menggabungkan teknologi modern seperti **Single Page Application (SPA)** dengan kekuatan **Internet of Things (IoT)**? Atau mungkin Anda ingin mencoba membangun aplikasi yang memadukan **LitElement**, **Tailwind CSS**, **TypeScript**, dan **esbuild** untuk menciptakan SPA yang cepat dan efisien, serta dihosting langsung pada perangkat IoT seperti **ESP32-C3**? Jika ya, artikel ini adalah panduan lengkap yang dirancang khusus untuk Anda!
+Pernahkah Anda ingin menggabungkan teknologi modern seperti **Single Page Application (spa)** dengan kekuatan **Internet of Things (IoT)**? Atau mungkin Anda ingin mencoba membangun aplikasi yang memadukan **LitElement**, **Tailwind CSS**, **TypeScript**, dan **esbuild** untuk menciptakan spa yang cepat dan efisien, serta dihosting langsung pada perangkat IoT seperti **ESP32-C3**? Jika ya, artikel ini adalah panduan lengkap yang dirancang khusus untuk Anda!
 
 Dalam artikel ini, kita akan membahas langkah-langkah untuk:
 
-- **Membangun aplikasi SPA** menggunakan **LitElement** sebagai fondasi UI yang modular dan kuat.
+- **Membangun aplikasi spa** menggunakan **LitElement** sebagai fondasi UI yang modular dan kuat.
 - **Memanfaatkan esbuild** sebagai alat build yang cepat dan ringan.
 - **Menggunakan Tailwind CSS** untuk styling modern tanpa repot menulis CSS manual.
 - **Mengelola workflow pengembangan** yang fleksibel, mencakup hosting lokal untuk development, **GitHub Pages** untuk demo, dan **ESP32-C3** untuk produksi.
@@ -67,13 +67,13 @@ Tidak hanya itu, artikel ini juga akan membimbing Anda melewati setiap detail ko
 - Membuat routing custom tanpa menggunakan library eksternal.
 - Melakukan deployment yang mulus di berbagai platform hosting.
 
-Dengan panduan ini, Anda akan memiliki pemahaman yang solid tentang bagaimana mengintegrasikan teknologi SPA modern dengan perangkat IoT untuk menciptakan aplikasi yang efisien dan fleksibel. Mari kita mulai petualangan ini dan wujudkan inovasi Anda! 🚀
+Dengan panduan ini, Anda akan memiliki pemahaman yang solid tentang bagaimana mengintegrasikan teknologi spa modern dengan perangkat IoT untuk menciptakan aplikasi yang efisien dan fleksibel. Mari kita mulai petualangan ini dan wujudkan inovasi Anda! 🚀
 
 ---
 
-1. **Kenapa SPA di IoT?**
+1. **Kenapa spa di IoT?**
 
-Sebagai pengembang, kita sering menghadapi kebutuhan membuat antarmuka web yang responsif, cepat, dan interaktif untuk perangkat IoT seperti ESP32-C3. Dengan pendekatan **SPA**, kita dapat:
+Sebagai pengembang, kita sering menghadapi kebutuhan membuat antarmuka web yang responsif, cepat, dan interaktif untuk perangkat IoT seperti ESP32-C3. Dengan pendekatan **spa**, kita dapat:
 
 1. **Navigasi Tanpa Reload:** Menghindari pemuatan ulang setiap kali berpindah halaman.
 2. **Efisiensi Memori:** Mengurangi jumlah file yang diunggah ke sistem file ESP32.
@@ -84,7 +84,7 @@ Sebagai pengembang, kita sering menghadapi kebutuhan membuat antarmuka web yang 
 
 2. **Apa yang Akan Kita Buat?**
 
-Sebuah proyek **SPA multipage** dengan halaman **Home**, **About**, dan **Help**, masing-masing memiliki:
+Sebuah proyek **spa multipage** dengan halaman **Home**, **About**, dan **Help**, masing-masing memiliki:
 
 - **Header:** Navbar navigasi antar halaman.
 - **Main Content:** Konten utama yang unik untuk setiap halaman.
@@ -130,19 +130,19 @@ Untuk memulai, pastikan Anda memiliki perangkat dan alat berikut:
 ---
 
 Yuk, kita mulai perjalanan menarik ini! 🚀  
-Langkah demi langkah, kita akan menyiapkan SPA yang elegan dan efisien untuk ESP32-C3. Anda siap? Mari kita bangun sesuatu yang luar biasa! 😄
-🎉 Dengan routing manual ini, Anda tetap dapat menjalankan aplikasi SPA pada ESP32-C3 dengan ukuran file yang minimal.
+Langkah demi langkah, kita akan menyiapkan spa yang elegan dan efisien untuk ESP32-C3. Anda siap? Mari kita bangun sesuatu yang luar biasa! 😄
+🎉 Dengan routing manual ini, Anda tetap dapat menjalankan aplikasi spa pada ESP32-C3 dengan ukuran file yang minimal.
 
-Berikut adalah panduan langkah-langkah untuk melakukan konfigurasi dan setup **SPA (Single Page Aplication)** sesuai dengan kriteria yang disebutkan.
+Berikut adalah panduan langkah-langkah untuk melakukan konfigurasi dan setup **spa (Single Page Aplication)** sesuai dengan kriteria yang disebutkan.
 
 ---
 
 ### **Langkah 1: Struktur Folder**
 
-Dalam pengembangan aplikasi Single Page Application (SPA) berbasis **LitElement**, **Tailwind CSS**, dan **TypeScript**, organisasi struktur folder menjadi hal yang esensial untuk memastikan keteraturan proyek. Berikut adalah struktur folder awal yang digunakan:
+Dalam pengembangan aplikasi Single Page Application (spa) berbasis **LitElement**, **Tailwind CSS**, dan **TypeScript**, organisasi struktur folder menjadi hal yang esensial untuk memastikan keteraturan proyek. Berikut adalah struktur folder awal yang digunakan:
 
 ```
-SPA/
+spa/
 ├── src/
 │   ├── components/    # Folder untuk komponen modular seperti Header, Footer, dll.
 │   ├── pages/         # Folder untuk halaman Home, About, dan Help
@@ -165,20 +165,20 @@ SPA/
 - **`package.json`:** Berfungsi sebagai pusat manajemen dependensi dan skrip untuk NPM.
 - **`.gitignore`:** Digunakan untuk memastikan bahwa file atau folder yang tidak relevan (seperti `node_modules/` atau file build) tidak diunggah ke repository Git.
 
-Struktur ini memberikan dasar yang kuat untuk pengembangan aplikasi SPA yang terorganisir dan scalable.
+Struktur ini memberikan dasar yang kuat untuk pengembangan aplikasi spa yang terorganisir dan scalable.
 
 ---
 
 ### **Langkah 2: Inisialisasi Proyek dengan NPM**
 
-Untuk memulai proyek SPA, langkah pertama adalah menginisialisasi proyek menggunakan **Node Package Manager (NPM)**. Proses ini menghasilkan file `package.json` yang akan berfungsi sebagai pusat manajemen dependensi dan skrip proyek.
+Untuk memulai proyek spa, langkah pertama adalah menginisialisasi proyek menggunakan **Node Package Manager (NPM)**. Proses ini menghasilkan file `package.json` yang akan berfungsi sebagai pusat manajemen dependensi dan skrip proyek.
 
 **Langkah-Langkah:**
 
 1. Buka terminal, lalu arahkan ke folder tempat Anda ingin menyimpan proyek. Buat direktori baru untuk proyek:
    ```bash
-   mkdir SPA
-   cd SPA
+   mkdir spa
+   cd spa
    ```
 2. Jalankan perintah berikut untuk menginisialisasi proyek dengan pengaturan default:
    ```bash
@@ -233,10 +233,10 @@ Setelah proyek diinisialisasi dengan NPM, langkah berikutnya adalah mengelola ko
      ```
 
 4. **Hubungkan ke Repository GitHub:**
-   - Buat repository baru di GitHub (misalnya, dengan nama `SPA`).
+   - Buat repository baru di GitHub (misalnya, dengan nama `spa`).
    - Hubungkan repository lokal dengan repository GitHub menggunakan perintah berikut:
      ```bash
-     git remote add origin https://github.com/username/SPA.git
+     git remote add origin https://github.com/username/spa.git
      git branch -M main
      git push -u origin main
      ```
@@ -254,7 +254,7 @@ Langkah ini memastikan bahwa proyek Anda siap untuk kolaborasi dan terintegrasi 
 
 ### **Langkah 4: Instalasi Dependensi**
 
-Pada tahap ini, kita akan memasang semua dependensi yang diperlukan untuk mengembangkan aplikasi SPA berbasis **LitElement**, **Tailwind CSS**, dan **TypeScript**. Instalasi ini mencakup pengaturan toolchain, konfigurasi file, dan penambahan skrip build agar proyek dapat dibuild dengan lancar.
+Pada tahap ini, kita akan memasang semua dependensi yang diperlukan untuk mengembangkan aplikasi spa berbasis **LitElement**, **Tailwind CSS**, dan **TypeScript**. Instalasi ini mencakup pengaturan toolchain, konfigurasi file, dan penambahan skrip build agar proyek dapat dibuild dengan lancar.
 
 ---
 
@@ -345,9 +345,9 @@ Kita akan mengatur skrip di `package.json` untuk mendukung kebutuhan development
 
 ```json
 {
-  "name": "SPA",
+  "name": "spa",
   "version": "1.0.0",
-  "description": "SPA with LitElement hosted on ESP32-C3, GitHub Pages, and local dev",
+  "description": "spa with LitElement hosted on ESP32-C3, GitHub Pages, and local dev",
   "scripts": {
     // Development
     "dev": "NODE_ENV=development node esbuild.config.js && npm run start:local",
@@ -454,7 +454,7 @@ Untuk memastikan semua skrip bekerja di Windows, gunakan pendekatan berikut:
 
 ##### **Workflow Skrip dan Penjelasannya**
 
-Agar proses pengembangan dan deployment aplikasi SPA menjadi lebih terstruktur, kita menggunakan berbagai skrip dalam `package.json`. Setiap workflow memiliki tujuan yang spesifik, mulai dari development di lokal, pembuatan build untuk pre-release (demo di GitHub Pages), hingga deployment ke perangkat ESP32-C3. Penjelasan di bawah ini mencakup tujuan setiap workflow, cara menjalankannya, dan langkah-langkah teknis yang terlibat.
+Agar proses pengembangan dan deployment aplikasi spa menjadi lebih terstruktur, kita menggunakan berbagai skrip dalam `package.json`. Setiap workflow memiliki tujuan yang spesifik, mulai dari development di lokal, pembuatan build untuk pre-release (demo di GitHub Pages), hingga deployment ke perangkat ESP32-C3. Penjelasan di bawah ini mencakup tujuan setiap workflow, cara menjalankannya, dan langkah-langkah teknis yang terlibat.
 
 ---
 
@@ -504,14 +504,14 @@ Workflow ini bertujuan untuk menghasilkan build pre-release yang akan digunakan 
 
 **Cara Kerja:**
 
-1. Jalankan **`npm run pre-release`** untuk membuild aplikasi dengan `publicPath: "/SPA"` yang cocok untuk subdirektori di GitHub Pages.
+1. Jalankan **`npm run pre-release`** untuk membuild aplikasi dengan `publicPath: "/spa"` yang cocok untuk subdirektori di GitHub Pages.
 2. Gunakan **`npm run deploy:github`** untuk mengunggah folder `dist` ke branch `gh-pages`.
 
 **Catatan Tambahan:**
 
 - Setelah deploy, aplikasi demo dapat diakses melalui URL:
   ```
-  https://username.github.io/SPA
+  https://username.github.io/spa
   ```
 
 ---
@@ -652,7 +652,7 @@ Tambahkan skrip berikut ke dalam `package.json`:
 | -------------------------- | ------------------------------------------------------------------ | ------------------ | ------------------------------------------------------------------------------------------------------- |
 | `npm run dev`              | Membuild aplikasi dan menjalankan server lokal (development)       | `dev`              | Membuild aplikasi menggunakan **esbuild** dalam mode development.                                       |
 | `npm run start:local`      | Menjalankan server lokal tanpa membuild                            | `start:local`      | Menggunakan **http-server** untuk menyajikan folder `dist` di `http://localhost:8080`.                  |
-| `npm run pre-release`      | Membuild aplikasi untuk GitHub Pages (pre-release)                 | `pre-release`      | Membuild aplikasi dengan path `/SPA` untuk kompatibilitas GitHub Pages.                                 |
+| `npm run pre-release`      | Membuild aplikasi untuk GitHub Pages (pre-release)                 | `pre-release`      | Membuild aplikasi dengan path `/spa` untuk kompatibilitas GitHub Pages.                                 |
 | `npm run deploy:github`    | Membuild dan mengunggah hasil build ke GitHub Pages                | `deploy:github`    | Menggunakan package **gh-pages** untuk mengunggah folder `dist` ke branch `gh-pages`.                   |
 | `npm run build:production` | Membuild aplikasi untuk ESP32-C3 (production)                      | `build:production` | Membuild aplikasi tanpa path tambahan (sesuai root direktori hosting ESP32-C3).                         |
 | `npm run deploy:esp32`     | Membuild dan mengunggah hasil build ke ESP32-C3                    | `deploy:esp32`     | Menjalankan build production, lalu mengunggah file ke ESP32-C3 melalui skrip custom.                    |
@@ -679,7 +679,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 // Tentukan publicPath berdasarkan hosting
 let publicPath = '/';
-if (isPreRelease) publicPath = '/SPA'; // Untuk GitHub Pages
+if (isPreRelease) publicPath = '/spa'; // Untuk GitHub Pages
 if (isProduction) publicPath = ''; // Untuk ESP32-C3
 
 esbuild
@@ -700,7 +700,7 @@ esbuild
   .catch(() => process.exit(1));
 ```
 
-Konfigurasi ini adalah bagian dari **esbuild** yang digunakan untuk membangun aplikasi SPA berbasis **TypeScript**, **Tailwind CSS**, dan **HTML**. Berikut adalah penjelasan setiap properti dalam konfigurasi tersebut:
+Konfigurasi ini adalah bagian dari **esbuild** yang digunakan untuk membangun aplikasi spa berbasis **TypeScript**, **Tailwind CSS**, dan **HTML**. Berikut adalah penjelasan setiap properti dalam konfigurasi tersebut:
 
 ---
 
@@ -871,7 +871,7 @@ export class FooterComponent extends LitElement {
   render() {
     return html`
       <footer>
-        <p>&copy; 2025 SPA (Single Page Aplication)</p>
+        <p>&copy; 2025 spa (Single Page Aplication)</p>
       </footer>
     `;
   }
@@ -897,7 +897,7 @@ export class HomePage extends LitElement {
     return html`
       <app-header></app-header>
       <main>
-        <h1>Welcome to SPA (Single Page Aplication)</h1>
+        <h1>Welcome to spa (Single Page Aplication)</h1>
         <p>This is the home page.</p>
       </main>
       <app-footer></app-footer>
@@ -935,11 +935,11 @@ export class HelpPage extends LitElement {
         <p>If you need assistance, refer to the following resources:</p>
         <ul>
           <li>
-            <a href="https://github.com/username/SPA/wiki" target="_blank"
+            <a href="https://github.com/username/spa/wiki" target="_blank"
               >Documentation</a
             >
           </li>
-          <li><a href="mailto:support@SPA.com">Email Support</a></li>
+          <li><a href="mailto:support@spa.com">Email Support</a></li>
           <li><a href="/faq">Frequently Asked Questions (FAQ)</a></li>
         </ul>
       </main>
@@ -970,7 +970,7 @@ export class AboutPage extends LitElement {
     return html`
       <app-header></app-header>
       <main>
-        <h1>About SPA (Single Page Aplication)</h1>
+        <h1>About spa (Single Page Aplication)</h1>
         <p>This application is powered by ESP32-C3.</p>
       </main>
       <app-footer></app-footer>
@@ -984,7 +984,7 @@ customElements.define('page-about', AboutPage);
 
 ### **Langkah 6: Mekanisme Routing**
 
-Aplikasi **Single Page Application (SPA)** membutuhkan mekanisme routing yang efisien untuk berpindah antar halaman tanpa memuat ulang dokumen. Dalam proyek ini, routing dilakukan tanpa library eksternal, memanfaatkan pendekatan **hash-based routing** dan JavaScript murni. Sub-bab berikut akan menjelaskan konsep dasar routing, implementasi custom router, dan cara penggunaannya.
+Aplikasi **Single Page Application (spa)** membutuhkan mekanisme routing yang efisien untuk berpindah antar halaman tanpa memuat ulang dokumen. Dalam proyek ini, routing dilakukan tanpa library eksternal, memanfaatkan pendekatan **hash-based routing** dan JavaScript murni. Sub-bab berikut akan menjelaskan konsep dasar routing, implementasi custom router, dan cara penggunaannya.
 
 ---
 
@@ -1435,7 +1435,7 @@ Jika pengguna mengakses `http://example.com/#/about`:
 
 #### **Tips untuk Routing**
 
-Dalam aplikasi SPA yang menggunakan hash-based routing, Anda mungkin menghadapi masalah saat memuat halaman selain halaman utama. Untuk mengatasinya:
+Dalam aplikasi spa yang menggunakan hash-based routing, Anda mungkin menghadapi masalah saat memuat halaman selain halaman utama. Untuk mengatasinya:
 
 - Gunakan hash-based routing (misalnya: `/#/home`) agar navigasi halaman tetap berfungsi di GitHub Pages.
 - Alternatifnya, tambahkan file `.htaccess` di folder `dist` untuk memastikan semua permintaan diarahkan ke `index.html`.
@@ -1489,7 +1489,7 @@ src/
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>My SPA</title>
+    <title>My spa</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -1516,7 +1516,7 @@ Pendekatan ini menggunakan **file HTML (`index.html`)** sebagai entry point utam
 
 **a. Strategi Pengembangan**
 
-- **Cocok untuk SPA dengan Integrasi Otomatis:**  
+- **Cocok untuk spa dengan Integrasi Otomatis:**  
   File HTML adalah pusat proyek. Semua file (CSS, JavaScript, gambar) diimpor langsung ke dalam HTML menggunakan tag `<link>` atau `<script>`.
 - **Hasil Build Berupa File HTML dengan Asset Terintegrasi:**  
   Esbuild menghasilkan file HTML yang telah dioptimalkan, termasuk referensi otomatis ke file CSS dan JavaScript.
@@ -1551,7 +1551,7 @@ c. **Cara Kerja**
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My SPA</title>
+    <title>My spa</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -1563,7 +1563,7 @@ c. **Cara Kerja**
 **e. Kelebihan**
 
 - **Proses Otomatis:** HTML, CSS, dan JavaScript digabungkan secara otomatis oleh esbuild.
-- **Sederhana untuk SPA:** Tidak perlu mengatur file HTML secara manual.
+- **Sederhana untuk spa:** Tidak perlu mengatur file HTML secara manual.
 
 **f. Kekurangan**
 
@@ -1580,7 +1580,7 @@ c. **Cara Kerja**
 | **Pendekatan Build**      | Bundling dimulai dari logika aplikasi            | Bundling dimulai dari template HTML                       |
 | **Hasil Build**           | File JavaScript (`bundle.js`) dan manual HTML    | File HTML dengan semua asset otomatis diatur              |
 | **Kebutuhan HTML Manual** | Ya, Anda harus menulis file HTML secara manual   | Tidak, file HTML otomatis diproses dan dioptimalkan       |
-| **Cocok untuk**           | Proyek TypeScript yang membutuhkan fleksibilitas | Proyek SPA sederhana dengan fokus pada HTML sebagai pusat |
+| **Cocok untuk**           | Proyek TypeScript yang membutuhkan fleksibilitas | Proyek spa sederhana dengan fokus pada HTML sebagai pusat |
 
 ---
 
@@ -1590,7 +1590,7 @@ c. **Cara Kerja**
   Anda ingin kendali penuh atas file HTML, atau jika aplikasi Anda membutuhkan bundling kompleks untuk JavaScript/TypeScript.
 
 - **Gunakan `entryPoints: ["src/index.html"]` Jika:**  
-  Anda ingin workflow yang lebih sederhana dan otomatis, terutama untuk aplikasi SPA yang menggabungkan HTML, CSS, dan JavaScript secara langsung.
+  Anda ingin workflow yang lebih sederhana dan otomatis, terutama untuk aplikasi spa yang menggabungkan HTML, CSS, dan JavaScript secara langsung.
 
 Untuk proyek ini, **`entryPoints: ["src/index.html"]`** adalah pilihan yang lebih cocok karena memungkinkan bundling otomatis, sederhana, dan mendukung hosting di platform seperti GitHub Pages dan ESP32-C3.
 
@@ -1598,7 +1598,7 @@ Untuk proyek ini, **`entryPoints: ["src/index.html"]`** adalah pilihan yang lebi
 
 ### **Langkah 8: Deployment ke Berbagai Hosting**
 
-Deployment adalah tahap penting dalam pengembangan aplikasi, yang memastikan aplikasi Anda dapat diakses oleh pengguna melalui internet. Langkah-langkah berikut menjelaskan proses deployment aplikasi SPA berbasis **LitElement**, **Tailwind CSS**, dan **TypeScript** ke **GitHub Pages** sebagai platform hosting demo.
+Deployment adalah tahap penting dalam pengembangan aplikasi, yang memastikan aplikasi Anda dapat diakses oleh pengguna melalui internet. Langkah-langkah berikut menjelaskan proses deployment aplikasi spa berbasis **LitElement**, **Tailwind CSS**, dan **TypeScript** ke **GitHub Pages** sebagai platform hosting demo.
 
 ---
 
@@ -1609,13 +1609,13 @@ Untuk memulai, pastikan Anda telah memiliki repository GitHub yang digunakan seb
 1. **Buat Repository Baru di GitHub:**  
    Jika belum memiliki repository, buat repository baru dengan langkah berikut:
 
-   - Masuk ke akun GitHub Anda dan buat repository baru dengan nama **`SPA`**.
+   - Masuk ke akun GitHub Anda dan buat repository baru dengan nama **`spa`**.
    - Centang opsi untuk inisialisasi repository dengan file `README.md`.
 
 2. **Hubungkan Repository Lokal ke GitHub:**  
    Jika repository lokal belum terhubung ke GitHub, jalankan perintah berikut di terminal:
    ```bash
-   git remote add origin https://github.com/username/SPA.git
+   git remote add origin https://github.com/username/spa.git
    git branch -M main
    git push -u origin main
    ```
@@ -1641,7 +1641,7 @@ File `package.json` perlu diperbarui untuk mendukung workflow deployment ke GitH
    Tambahkan properti `homepage` ke file `package.json` untuk menentukan URL tempat aplikasi akan dihosting.
 
    ```json
-   "homepage": "https://username.github.io/SPA",
+   "homepage": "https://username.github.io/spa",
    ```
 
 2. **Tambahkan Skrip Deployment:**  
@@ -1700,25 +1700,25 @@ Langkah terakhir adalah mengaktifkan GitHub Pages di repository Anda.
 Setelah GitHub Pages aktif, aplikasi Anda dapat diakses melalui URL:
 
 ```
-https://username.github.io/SPA
+https://username.github.io/spa
 ```
 
 ---
 
-Dengan langkah-langkah ini, Anda telah berhasil melakukan deployment aplikasi SPA Anda ke GitHub Pages. Ini adalah solusi yang ideal untuk mendemonstrasikan aplikasi kepada pengguna atau tim sebelum deployment akhir ke platform produksi seperti ESP32-C3. 🎉
+Dengan langkah-langkah ini, Anda telah berhasil melakukan deployment aplikasi spa Anda ke GitHub Pages. Ini adalah solusi yang ideal untuk mendemonstrasikan aplikasi kepada pengguna atau tim sebelum deployment akhir ke platform produksi seperti ESP32-C3. 🎉
 
 ---
 
 ### **Langkah 9: Deploy Aplikasi ke ESP32-C3**
 
-Deploying aplikasi web ke perangkat IoT seperti **ESP32-C3** memungkinkan Anda untuk mengubahnya menjadi web server yang dapat diakses melalui jaringan lokal atau bahkan sebagai Access Point (AP). Dalam langkah ini, kita akan membahas proses deployment aplikasi SPA ke **ESP32-C3**, termasuk persiapan file, konfigurasi web server, hingga pengunggahan file ke sistem file ESP32-C3 menggunakan **LittleFS**.
+Deploying aplikasi web ke perangkat IoT seperti **ESP32-C3** memungkinkan Anda untuk mengubahnya menjadi web server yang dapat diakses melalui jaringan lokal atau bahkan sebagai Access Point (AP). Dalam langkah ini, kita akan membahas proses deployment aplikasi spa ke **ESP32-C3**, termasuk persiapan file, konfigurasi web server, hingga pengunggahan file ke sistem file ESP32-C3 menggunakan **LittleFS**.
 
 ---
 
 **Langkah 1: Persiapan File Build**
 
 1. **Bangun Aplikasi Web:**  
-   Jalankan perintah berikut untuk membuild aplikasi SPA Anda:
+   Jalankan perintah berikut untuk membuild aplikasi spa Anda:
 
    ```bash
    npm run build
@@ -1845,7 +1845,7 @@ Gunakan alamat IP yang ditampilkan di Serial Monitor untuk mengakses server web 
 
 ---
 
-Dengan mengikuti langkah-langkah di atas, Anda dapat berhasil mengubah ESP32-C3 menjadi server web yang menyajikan aplikasi SPA Anda. Deployment ini sangat ideal untuk demonstrasi aplikasi atau sebagai basis untuk pengembangan lebih lanjut dalam lingkungan IoT. 🎉
+Dengan mengikuti langkah-langkah di atas, Anda dapat berhasil mengubah ESP32-C3 menjadi server web yang menyajikan aplikasi spa Anda. Deployment ini sangat ideal untuk demonstrasi aplikasi atau sebagai basis untuk pengembangan lebih lanjut dalam lingkungan IoT. 🎉
 
 ---
 
@@ -1853,7 +1853,7 @@ Dengan mengikuti langkah-langkah di atas, Anda dapat berhasil mengubah ESP32-C3 
 
 **esbuild** adalah alat build modern yang dirancang untuk menggabungkan, meminifikasi, dan mengoptimalkan file proyek berbasis web. Dengan performa tinggi dan pendekatan berbasis **JavaScript/TypeScript**, esbuild memungkinkan pengembang untuk menghasilkan aplikasi yang efisien dan ringan, baik untuk pengembangan maupun produksi.
 
-Sebagai alat build, esbuild bekerja dengan membaca file entry point, menganalisis semua dependensinya, lalu menghasilkan file output yang telah dioptimalkan. Dalam konteks pengembangan **Single Page Application (SPA)** seperti yang sedang kita bangun, esbuild memainkan peran penting untuk memastikan semua komponen (HTML, CSS, TypeScript) digabungkan menjadi file yang siap digunakan di berbagai lingkungan hosting.
+Sebagai alat build, esbuild bekerja dengan membaca file entry point, menganalisis semua dependensinya, lalu menghasilkan file output yang telah dioptimalkan. Dalam konteks pengembangan **Single Page Application (spa)** seperti yang sedang kita bangun, esbuild memainkan peran penting untuk memastikan semua komponen (HTML, CSS, TypeScript) digabungkan menjadi file yang siap digunakan di berbagai lingkungan hosting.
 
 **esbuild** adalah alat build modern yang dapat digunakan baik melalui perintah **CLI (Command Line Interface)** maupun API JavaScript dengan metode **`esbuild.build`**. Kedua pendekatan ini memiliki tujuan yang sama, yaitu menggabungkan, meminifikasi, dan mengoptimalkan file proyek, namun dengan cara kerja dan fleksibilitas yang berbeda. Berikut adalah analisis mendalam tentang kedua pendekatan tersebut.
 
@@ -1892,7 +1892,7 @@ esbuild src/index.html --bundle --outfile=dist/index.html --minify
 
 **2. Opsi-Opsi Penting esbuild**
 
-Berikut adalah opsi-opsi penting pada esbuild yang relevan untuk pengembangan SPA, termasuk cara kerjanya dan rekomendasinya:
+Berikut adalah opsi-opsi penting pada esbuild yang relevan untuk pengembangan spa, termasuk cara kerjanya dan rekomendasinya:
 
 ---
 
@@ -1915,7 +1915,7 @@ Berikut adalah opsi-opsi penting pada esbuild yang relevan untuk pengembangan SP
 
   **Rekomendasi:**
 
-  - Gunakan **`entryPoints: ['src/index.html']`** untuk proyek SPA agar bundling otomatis dimulai dari file HTML.
+  - Gunakan **`entryPoints: ['src/index.html']`** untuk proyek spa agar bundling otomatis dimulai dari file HTML.
   - Tetapkan folder output seperti `dist` untuk menjaga struktur proyek tetap terorganisir.
 
 ---
@@ -1958,7 +1958,7 @@ Berikut adalah opsi-opsi penting pada esbuild yang relevan untuk pengembangan SP
 
   **Rekomendasi:**
 
-  - Pastikan untuk mendefinisikan loader untuk `.ts` (TypeScript) dan `.css` dalam proyek SPA Anda.
+  - Pastikan untuk mendefinisikan loader untuk `.ts` (TypeScript) dan `.css` dalam proyek spa Anda.
   - Tambahkan loader lain jika proyek membutuhkan file seperti gambar atau font.
 
 ---
@@ -2057,7 +2057,7 @@ Berikut adalah opsi-opsi penting pada esbuild yang relevan untuk pengembangan SP
 
 ---
 
-##### **Rekomendasi untuk Pengembangan SPA**
+##### **Rekomendasi untuk Pengembangan spa**
 
 1. **Pengembangan Lokal:**
 
@@ -2073,7 +2073,7 @@ Berikut adalah opsi-opsi penting pada esbuild yang relevan untuk pengembangan SP
    - Nonaktifkan sourcemap untuk mengurangi ukuran file.
    - Gunakan konfigurasi **minify** dan **bundle** untuk menghasilkan aplikasi yang cepat dan ringan.
 
-Dengan konfigurasi dan opsi ini, esbuild dapat menjadi alat build yang cepat, ringan, dan sangat cocok untuk pengembangan aplikasi SPA berbasis LitElement, Tailwind CSS, dan TypeScript.
+Dengan konfigurasi dan opsi ini, esbuild dapat menjadi alat build yang cepat, ringan, dan sangat cocok untuk pengembangan aplikasi spa berbasis LitElement, Tailwind CSS, dan TypeScript.
 
 ---
 
@@ -2167,9 +2167,9 @@ Semua opsi yang tersedia di CLI juga bisa digunakan dalam metode `esbuild.build`
 
 3. **Pengaturan Path:**
 
-   - `publicPath`: Path dasar untuk file statis (misalnya, `/SPA` untuk GitHub Pages).
+   - `publicPath`: Path dasar untuk file statis (misalnya, `/spa` untuk GitHub Pages).
      ```javascript
-     publicPath: '/SPA';
+     publicPath: '/spa';
      ```
 
 4. **Loader:**
@@ -2225,7 +2225,7 @@ esbuild
     outdir: 'dist', // Direktori output
     minify: isProduction, // Minifikasi hanya untuk production
     sourcemap: isDev, // Sourcemap hanya untuk development
-    publicPath: isPreRelease ? '/SPA' : '/', // Path untuk file statis
+    publicPath: isPreRelease ? '/spa' : '/', // Path untuk file statis
     watch: isDev, // Watch mode untuk development
     loader: { '.ts': 'ts', '.css': 'css' }, // Loader untuk file tertentu
     define: {
@@ -2278,9 +2278,9 @@ Kedua pendekatan ini memiliki kelebihan dan kekurangan masing-masing. Pilihan te
 
 ---
 
-#### **Rekomendasi untuk Proyek SPA**
+#### **Rekomendasi untuk Proyek spa**
 
-Dalam pengembangan **SPA berbasis LitElement, Tailwind CSS, dan TypeScript**, pendekatan menggunakan **API `esbuild.build`** lebih direkomendasikan karena fleksibilitasnya. Dengan API ini, Anda dapat:
+Dalam pengembangan **spa berbasis LitElement, Tailwind CSS, dan TypeScript**, pendekatan menggunakan **API `esbuild.build`** lebih direkomendasikan karena fleksibilitasnya. Dengan API ini, Anda dapat:
 
 1. Mengelola perbedaan konfigurasi antara **mode development** dan **produksi**.
 2. Mengintegrasikan esbuild dengan skrip deployment untuk GitHub Pages atau ESP32-C3.
@@ -2421,13 +2421,13 @@ Berikut adalah rujukan untuk masing-masing topik yang dapat membantu Anda mempel
 
 ---
 
-**12. Single Page Application (SPA)**
+**12. Single Page Application (spa)**
 
 - **Artikel:**  
   [What is a Single Page Application?](https://www.cloudflare.com/learning/performance/what-is-a-single-page-application/)  
-  Penjelasan tentang SPA dari Cloudflare.
+  Penjelasan tentang spa dari Cloudflare.
 - **Tutorial:**  
-  [Building a Simple SPA with JavaScript](https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Client-side_JavaScript_frameworks/Introduction)  
-  Panduan membangun SPA dari Mozilla MDN.
+  [Building a Simple spa with JavaScript](https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Client-side_JavaScript_frameworks/Introduction)  
+  Panduan membangun spa dari Mozilla MDN.
 
 ---
