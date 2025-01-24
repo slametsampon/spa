@@ -263,7 +263,7 @@ Pada tahap ini, kita akan memasang semua dependensi yang diperlukan untuk mengem
 Jalankan perintah berikut di terminal untuk memasang dependensi inti:
 
 ```bash
-npm install lit tailwindcss esbuild typescript
+npm install --save-dev lit tailwindcss esbuild typescript
 ```
 
 **Penjelasan:**
