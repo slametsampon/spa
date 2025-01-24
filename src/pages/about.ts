@@ -1,16 +1,21 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
+import '../components/header.ts';
+import '../components/footer.ts';
 
 export class AboutPage extends LitElement {
-  static styles = css`
-    main {
-      @apply p-8;
-    }
-  `;
+  // Nonaktifkan Shadow DOM untuk memungkinkan Tailwind bekerja
+  createRenderRoot() {
+    return this; // Menggunakan Light DOM
+  }
 
+  connectedCallback() {
+    super.connectedCallback();
+    console.log('<page-about> connected');
+  }
   render() {
     return html`
       <app-header></app-header>
-      <main>
+      <main class="p-8">
         <h1>About spa (Single Page Aplication)</h1>
         <p>This application is powered by ESP32-C3.</p>
       </main>

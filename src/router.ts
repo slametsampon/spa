@@ -8,11 +8,11 @@ export default class Router {
 
   // Tangani perubahan rute
   private handleRoute(): void {
-    const path = window.location.hash.slice(1) || '/'; // Ambil path setelah #
+    const path = window.location.hash || '#/'; // Ambil hash lengkap
     if (this.routes[path]) {
       this.routes[path](); // Jalankan callback untuk path
     } else {
-      this.routes['/404'] && this.routes['/404'](); // Callback untuk 404
+      this.routes['#/404'] && this.routes['#/404'](); // Callback untuk 404
     }
   }
 

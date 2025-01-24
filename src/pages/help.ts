@@ -1,6 +1,16 @@
 import { LitElement, html } from 'lit';
+import '../components/header.ts';
+import '../components/footer.ts';
 
 export class HelpPage extends LitElement {
+  // Nonaktifkan Shadow DOM untuk memungkinkan Tailwind bekerja
+  createRenderRoot() {
+    return this; // Menggunakan Light DOM
+  }
+  connectedCallback() {
+    super.connectedCallback();
+    console.log('<page-help> connected');
+  }
   render() {
     return html`
       <app-header></app-header>

@@ -1,12 +1,29 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 
 export class FooterComponent extends LitElement {
+  // Nonaktifkan Shadow DOM untuk memungkinkan Tailwind bekerja
+  createRenderRoot() {
+    return this; // Menggunakan Light DOM
+  }
+
+  // Lifecycle untuk debugging
+  connectedCallback() {
+    super.connectedCallback();
+    console.log('<app-footer> connected');
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    console.log('<app-footer> disconnected');
+  }
+
   render() {
     return html`
       <footer class="bg-gray-800 text-white text-center p-4">
-        <p>&copy; 2025 spa (Single Page Aplication)</p>
+        <p>&copy; 2025 SPA (Single Page Application)</p>
       </footer>
     `;
   }
 }
+
 customElements.define('app-footer', FooterComponent);
