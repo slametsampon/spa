@@ -16,7 +16,9 @@ export class AboutPage extends LitElement {
     return html`
       <app-header></app-header>
       <main class="p-8">
-        <h1>About spa (Single Page Aplication)</h1>
+        <h1 class="text-2xl font-bold mb-4">
+          About spa (Single Page Aplication)
+        </h1>
         <p>This application is powered by ESP32-C3.</p>
       </main>
       <app-footer></app-footer>

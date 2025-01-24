@@ -14,7 +14,7 @@ export class HelpPage extends LitElement {
   render() {
     return html`
       <app-header></app-header>
-      <main class="p-8">
+      <main class="p-8 h-full">
         <h1 class="text-2xl font-bold mb-4">Help & Support</h1>
         <p class="mb-2">
           If you need assistance, refer to the following resources:

@@ -19,7 +19,9 @@ export class FooterComponent extends LitElement {
 
   render() {
     return html`
-      <footer class="bg-gray-800 text-white text-center p-4">
+      <footer
+        class="bg-gray-800 text-white text-center p-4 bottom-0 fixed min-w-full"
+      >
         <p>&copy; 2025 SPA (Single Page Application)</p>
       </footer>
     `;
