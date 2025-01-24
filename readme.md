@@ -6,7 +6,8 @@
   - [**1. Install Dependensi Dasar**](#1-install-dependensi-dasar)
   - [**2. Inisialisasi Tailwind CSS**](#2-inisialisasi-tailwind-css)
   - [**3. Konfigurasi File Tailwind CSS**](#3-konfigurasi-file-tailwind-css)
-  - [**4. Skrip pada `package.json`**](#4-skrip-pada-packagejson)
+  - [**4. Penjelasan Dependensi Tambahan**](#4-penjelasan-dependensi-tambahan)
+  - [**5. Skrip pada `package.json`**](#5-skrip-pada-packagejson)
     - [**Kompatibilitas Skrip dengan Windows 10/11**](#kompatibilitas-skrip-dengan-windows-1011)
     - [**Rekomendasi untuk Kompatibilitas Lintas Platform**](#rekomendasi-untuk-kompatibilitas-lintas-platform)
     - [**Workflow Skrip dan Penjelasannya**](#workflow-skrip-dan-penjelasannya)
@@ -337,7 +338,83 @@ module.exports = {
 
 ---
 
-#### **4. Skrip pada `package.json`**
+#### **4. Penjelasan Dependensi Tambahan**
+
+Selain dependensi utama seperti `lit`, `tailwindcss`, `esbuild`, dan `typescript`, terdapat beberapa **devDependencies** lainnya yang membantu dalam proses pengembangan, build, dan deployment aplikasi. Berikut adalah penjelasan masing-masing dependensi:
+
+- **`concurrently`**  
+  Versi: ^9.1.2  
+  Digunakan untuk menjalankan beberapa skrip Node.js secara bersamaan di terminal. Dalam proyek ini, `concurrently` digunakan untuk menjalankan beberapa proses, seperti build menggunakan esbuild, kompilasi Tailwind CSS, dan live-server secara paralel. Hal ini meningkatkan efisiensi selama pengembangan.
+
+  **Contoh Penggunaan:**  
+  Skrip `"dev:full"` di `package.json` menggunakan `concurrently` untuk menjalankan:
+
+  - Kompilasi Tailwind CSS dalam mode watch (`tailwind:watch`)
+  - Build aplikasi dengan esbuild dalam mode watch (`esbuild:watch`)
+  - Menjalankan server lokal (`start:local`).
+
+---
+
+- **`cross-env`**  
+  Versi: ^7.0.3  
+  Utility untuk mengatur variabel lingkungan (environment variables) dengan cara yang kompatibel di berbagai sistem operasi. Hal ini penting untuk memastikan variabel seperti `NODE_ENV` dapat digunakan dengan benar di Windows, macOS, atau Linux.
+
+  **Contoh Penggunaan:**
+
+  - Skrip `dev` dan `build:production` memanfaatkan `cross-env` untuk menentukan apakah lingkungan sedang dalam mode development, pre-release, atau production. Variabel ini kemudian digunakan untuk menentukan opsi seperti minifikasi pada `esbuild`.
+
+---
+
+- **`live-server`**  
+  Versi: ^1.2.0  
+  Server lokal dengan fitur live reload, yang akan otomatis menyegarkan browser saat terjadi perubahan pada file. Digunakan selama proses pengembangan agar perubahan kode dapat langsung terlihat tanpa perlu menyegarkan browser secara manual.
+
+  **Contoh Penggunaan:**
+
+  - Skrip `start:local` menggunakan `live-server` untuk menyajikan folder `dist` dan memantau perubahan pada file.
+
+---
+
+- **`tailwindcss`**  
+  Versi: ^3.4.17  
+  Framework CSS berbasis utility-first yang memungkinkan pengembangan styling lebih cepat dan efisien. Sudah dijelaskan sebelumnya, Tailwind CSS diintegrasikan untuk mempermudah pembuatan antarmuka yang responsif dan konsisten.
+
+---
+
+- **`typescript`**  
+  Versi: ^5.7.3  
+  Superset JavaScript yang menambahkan dukungan untuk tipe statis, membantu mencegah kesalahan tipe di runtime, dan mempermudah pemeliharaan kode dengan fitur seperti autocompletion dan type checking.
+
+---
+
+- **`esbuild`**  
+  Versi: ^0.24.2  
+  Build tool modern dengan performa sangat cepat, digunakan untuk menggabungkan dan meminifikasi file TypeScript, JavaScript, CSS, dan lainnya. Dalam proyek ini, `esbuild` bertanggung jawab untuk membundle aplikasi agar siap digunakan di browser.
+
+---
+
+**Contoh Skrip Terkait Dependensi**
+
+Berikut adalah skrip-skrip di `package.json` yang mengintegrasikan dependensi ini:
+
+```json
+"scripts": {
+  "dev": "concurrently \"cross-env NODE_ENV=development node esbuild.config.js\" \"npm run start:local\"",
+  "dev:full": "concurrently \"npm run tailwind:watch\" \"npm run esbuild:watch\" \"npm run start:local\"",
+  "start:local": "live-server dist --watch",
+  "tailwind:watch": "tailwindcss -i ./src/styles.css -o ./dist/styles.css --watch"
+}
+```
+
+- Skrip **`dev`**: Menjalankan proses build (menggunakan `esbuild`) dan server lokal (`live-server`) secara bersamaan dengan bantuan `concurrently`.
+- Skrip **`dev:full`**: Menjalankan tiga proses paralel sekaligus:
+  1. Watch mode untuk Tailwind CSS.
+  2. Watch mode untuk esbuild.
+  3. Menyajikan file statis menggunakan `live-server`.
+
+---
+
+#### **5. Skrip pada `package.json`**
 
 Kita akan mengatur skrip di `package.json` untuk mendukung kebutuhan development, pre-release, production, dan deployment.
 
@@ -349,31 +426,30 @@ Kita akan mengatur skrip di `package.json` untuk mendukung kebutuhan development
   "version": "1.0.0",
   "description": "spa with LitElement hosted on ESP32-C3, GitHub Pages, and local dev",
   "scripts": {
-    // Development
-    "dev": "NODE_ENV=development node esbuild.config.js && npm run start:local",
-    "start:local": "http-server dist --push-state",
-
-    // Pre-release (GitHub Pages)
-    "pre-release": "NODE_ENV=pre-release node esbuild.config.js",
+    "dev": "concurrently \"cross-env NODE_ENV=development node esbuild.config.js\" \"npm run start:local\"",
+    "dev:full": "concurrently \"npm run tailwind:watch\" \"npm run esbuild:watch\" \"npm run start:local\"",
+    "esbuild:watch": "cross-env NODE_ENV=development node esbuild.config.js",
+    "start:local": "live-server dist --watch",
+    "pre-release": "cross-env NODE_ENV=pre-release node esbuild.config.js",
     "deploy:github": "npm run pre-release && gh-pages -d dist",
-
-    // Production (ESP32-C3)
-    "build:production": "NODE_ENV=production node esbuild.config.js",
+    "build:production": "cross-env NODE_ENV=production node esbuild.config.js",
     "deploy:esp32": "npm run build:production && npm run upload:esp32",
     "upload:esp32": "node scripts/upload-to-esp32.js",
-
-    // Tailwind CSS
     "tailwind:build": "tailwindcss -i ./src/styles.css -o ./dist/styles.css --minify",
     "tailwind:watch": "tailwindcss -i ./src/styles.css -o ./dist/styles.css --watch",
-
-    // Utility
     "clean": "rm -rf dist"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
-    "esbuild": "^0.19.0",
-    "gh-pages": "^5.0.0",
-    "http-server": "^14.1.1",
-    "tailwindcss": "^3.3.0"
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.24.2",
+    "lit": "^3.2.1",
+    "live-server": "^1.2.0",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3"
   }
 }
 ```
@@ -671,8 +747,10 @@ Kita akan membuat `esbuild.config.js` untuk menangani **stage development**, **p
 
 ```javascript
 const esbuild = require('esbuild');
+const fs = require('fs');
+const path = require('path');
 
-// Tentukan environment berdasarkan argumen command line
+// Tentukan environment
 const isDev = process.env.NODE_ENV === 'development';
 const isPreRelease = process.env.NODE_ENV === 'pre-release';
 const isProduction = process.env.NODE_ENV === 'production';
@@ -682,22 +760,63 @@ let publicPath = '/';
 if (isPreRelease) publicPath = '/spa'; // Untuk GitHub Pages
 if (isProduction) publicPath = ''; // Untuk ESP32-C3
 
-esbuild
-  .build({
-    entryPoints: ['src/index.html'],
-    outdir: 'dist',
-    bundle: true,
-    minify: !isDev,
-    sourcemap: isDev,
-    publicPath: publicPath,
-    loader: {
-      '.ts': 'ts',
-      '.css': 'css',
-    },
-    watch: isDev, // Mode watch aktif hanya untuk development
-    logLevel: 'info', // Tampilkan log saat build
-  })
-  .catch(() => process.exit(1));
+// Salin file HTML
+console.log('Checking if source file exists...');
+console.log('File exists:', fs.existsSync(path.resolve('src/index.html')));
+const copyFile = (src, dest) => {
+  try {
+    fs.copyFileSync(src, dest);
+    console.log(`Copied ${src} to ${dest}`);
+  } catch (error) {
+    console.error(`Failed to copy ${src}:`, error.message);
+  }
+};
+console.log('Checking if source file exists...');
+console.log('File exists:', fs.existsSync(path.resolve('src/index.html')));
+
+// Konfigurasi esbuild
+const buildOptions = {
+  entryPoints: ['src/index.ts'],
+  outdir: 'dist',
+  bundle: true,
+  minify: isProduction,
+  sourcemap: isDev || isPreRelease,
+  publicPath: publicPath,
+  loader: {
+    '.ts': 'ts',
+    '.css': 'css',
+  },
+  logLevel: 'info',
+};
+
+// Jalankan build
+const startBuild = async () => {
+  console.log('Starting esbuild...');
+
+  try {
+    const ctx = await esbuild.context(buildOptions);
+    if (isDev) {
+      console.log('Watching for changes...');
+      await ctx.watch();
+    } else {
+      console.log('Building for production...');
+      await ctx.rebuild();
+    }
+
+    console.log('Build completed successfully! Check dist/ folder for output.');
+  } catch (err) {
+    console.error('Build failed:', err);
+    process.exit(1);
+  }
+};
+
+// Jalankan proses secara berurutan
+const main = async () => {
+  await startBuild();
+  copyFile('src/index.html', 'dist/index.html'); // Pindahkan proses copyFile setelah startBuild selesai
+};
+
+main();
 ```
 
 Konfigurasi ini adalah bagian dari **esbuild** yang digunakan untuk membangun aplikasi spa berbasis **TypeScript**, **Tailwind CSS**, dan **HTML**. Berikut adalah penjelasan setiap properti dalam konfigurasi tersebut:
@@ -827,28 +946,36 @@ Dengan instalasi dependensi dan konfigurasi ini, proyek Anda siap untuk melanjut
 Buat file `src/components/header.ts`:
 
 ```typescript
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 
 export class HeaderComponent extends LitElement {
-  static styles = css`
-    nav {
-      @apply bg-blue-600 text-white p-4;
-    }
-    a {
-      @apply text-white mx-2 hover:underline;
-    }
-  `;
+  // Nonaktifkan Shadow DOM
+  createRenderRoot() {
+    return this; // Menggunakan Light DOM
+  }
+  connectedCallback() {
+    super.connectedCallback();
+    console.log('<app-header> connected');
+  }
 
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    console.log('<app-header> disconnected');
+  }
+
+  // Template HTML
   render() {
     return html`
-      <nav>
-        <a href="/">Home</a>
-        <a href="/about">About</a>
-        <a href="/help">Help</a>
+      <nav class="bg-blue-600 text-white p-4 flex gap-4">
+        <a href="#/" class="hover:underline">Home</a>
+        <a href="#/about" class="hover:underline">About</a>
+        <a href="#/help" class="hover:underline">Help</a>
       </nav>
     `;
   }
 }
+
+// Mendefinisikan elemen custom
 customElements.define('app-header', HeaderComponent);
 ```
 
@@ -859,23 +986,36 @@ customElements.define('app-header', HeaderComponent);
 Buat file `src/components/footer.ts`:
 
 ```typescript
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 
 export class FooterComponent extends LitElement {
-  static styles = css`
-    footer {
-      @apply bg-gray-800 text-white text-center p-4;
-    }
-  `;
+  // Nonaktifkan Shadow DOM untuk memungkinkan Tailwind bekerja
+  createRenderRoot() {
+    return this; // Menggunakan Light DOM
+  }
+
+  // Lifecycle untuk debugging
+  connectedCallback() {
+    super.connectedCallback();
+    console.log('<app-footer> connected');
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    console.log('<app-footer> disconnected');
+  }
 
   render() {
     return html`
-      <footer>
-        <p>&copy; 2025 spa (Single Page Aplication)</p>
+      <footer
+        class="bg-gray-800 text-white text-center p-4 bottom-0 fixed min-w-full"
+      >
+        <p>&copy; 2025 SPA (Single Page Application)</p>
       </footer>
     `;
   }
 }
+
 customElements.define('app-footer', FooterComponent);
 ```
 
@@ -884,26 +1024,33 @@ customElements.define('app-footer', FooterComponent);
 Buat file `src/pages/home.ts`:
 
 ```typescript
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
+import '../components/header.ts';
+import '../components/footer.ts';
 
 export class HomePage extends LitElement {
-  static styles = css`
-    main {
-      @apply p-8;
-    }
-  `;
-
+  // Nonaktifkan Shadow DOM untuk memungkinkan Tailwind bekerja
+  createRenderRoot() {
+    return this; // Menggunakan Light DOM
+  }
+  connectedCallback() {
+    super.connectedCallback();
+    console.log('<page-home> connected');
+  }
   render() {
     return html`
       <app-header></app-header>
-      <main>
-        <h1>Welcome to spa (Single Page Aplication)</h1>
-        <p>This is the home page.</p>
+      <main class="p-8">
+        <h1 class="text-2xl font-bold mb-4">
+          Welcome to SPA (Single Page Application)
+        </h1>
+        <p class="text-gray-700">This is the home page.</p>
       </main>
       <app-footer></app-footer>
     `;
   }
 }
+
 customElements.define('page-home', HomePage);
 ```
 
@@ -912,30 +1059,30 @@ customElements.define('page-home', HomePage);
 Buat file `src/pages/help.ts`:
 
 ```typescript
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
+import '../components/header.ts';
+import '../components/footer.ts';
 
 export class HelpPage extends LitElement {
-  static styles = css`
-    main {
-      @apply p-8;
-    }
-    h1 {
-      @apply text-2xl font-bold mb-4;
-    }
-    p {
-      @apply mb-2;
-    }
-  `;
-
+  // Nonaktifkan Shadow DOM untuk memungkinkan Tailwind bekerja
+  createRenderRoot() {
+    return this; // Menggunakan Light DOM
+  }
+  connectedCallback() {
+    super.connectedCallback();
+    console.log('<page-help> connected');
+  }
   render() {
     return html`
       <app-header></app-header>
-      <main>
-        <h1>Help & Support</h1>
-        <p>If you need assistance, refer to the following resources:</p>
+      <main class="p-8 h-full">
+        <h1 class="text-2xl font-bold mb-4">Help & Support</h1>
+        <p class="mb-2">
+          If you need assistance, refer to the following resources:
+        </p>
         <ul>
           <li>
-            <a href="https://github.com/username/spa/wiki" target="_blank"
+            <a href="https://github.com/slametsampon/spa/wiki" target="_blank"
               >Documentation</a
             >
           </li>
@@ -957,20 +1104,27 @@ customElements.define('page-help', HelpPage);
 Buat file `src/pages/about.ts`:
 
 ```typescript
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
+import '../components/header.ts';
+import '../components/footer.ts';
 
 export class AboutPage extends LitElement {
-  static styles = css`
-    main {
-      @apply p-8;
-    }
-  `;
+  // Nonaktifkan Shadow DOM untuk memungkinkan Tailwind bekerja
+  createRenderRoot() {
+    return this; // Menggunakan Light DOM
+  }
 
+  connectedCallback() {
+    super.connectedCallback();
+    console.log('<page-about> connected');
+  }
   render() {
     return html`
       <app-header></app-header>
-      <main>
-        <h1>About spa (Single Page Aplication)</h1>
+      <main class="p-8">
+        <h1 class="text-2xl font-bold mb-4">
+          About spa (Single Page Aplication)
+        </h1>
         <p>This application is powered by ESP32-C3.</p>
       </main>
       <app-footer></app-footer>
@@ -1027,11 +1181,11 @@ export default class Router {
 
   // Tangani perubahan rute
   private handleRoute(): void {
-    const path = window.location.hash.slice(1) || '/'; // Ambil path setelah #
+    const path = window.location.hash || '#/'; // Ambil hash lengkap
     if (this.routes[path]) {
       this.routes[path](); // Jalankan callback untuk path
     } else {
-      console.error(`Route not found: ${path}`);
+      this.routes['#/404'] && this.routes['#/404'](); // Callback untuk 404
     }
   }
 
@@ -1099,37 +1253,35 @@ Untuk menggunakan **hash-based routing**, Anda hanya perlu memastikan bahwa URL 
 **Contoh di `index.ts`:**
 
 ```typescript
-import Router from './router';
+import Router from './router.ts';
+import './pages/home.ts';
+import './pages/help.ts';
+import './pages/about.ts';
 
 // Inisialisasi router
 const router = new Router();
-
 // Tambahkan rute untuk Home
-router.addRoute('#/', () => {
-  document.body.innerHTML = `
-    <app-header></app-header>
-    <page-home></page-home>
-    <app-footer></app-footer>
-  `;
-});
-
-// Tambahkan rute untuk About
-router.addRoute('#/about', () => {
-  document.body.innerHTML = `
-    <app-header></app-header>
-    <page-about></page-about>
-    <app-footer></app-footer>
-  `;
-});
-
-// Tambahkan rute untuk Help
-router.addRoute('#/help', () => {
-  document.body.innerHTML = `
-    <app-header></app-header>
-    <page-help></page-help>
-    <app-footer></app-footer>
-  `;
-});
+const app = document.querySelector('#app'); // Pilih elemen root
+if (app) {
+  // Tambahkan rute untuk Home
+  router.addRoute('#/', () => {
+    document.body.innerHTML = `
+      <page-home></page-home>
+    `;
+  });
+  // Tambahkan rute untuk About
+  router.addRoute('#/about', () => {
+    document.body.innerHTML = `
+      <page-about></page-about>
+    `;
+  });
+  // Tambahkan rute untuk Help
+  router.addRoute('#/help', () => {
+    document.body.innerHTML = `
+      <page-help></page-help>
+    `;
+  });
+}
 
 // Mulai router
 router.init();
@@ -1552,10 +1704,11 @@ c. **Cara Kerja**
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My spa</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <script src="index.ts" type="module"></script>
+    <div id="app" class="min-h-screen"></div>
+    <script type="module" src="index.js"></script>
   </body>
 </html>
 ```

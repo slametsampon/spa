@@ -50,12 +50,9 @@ const startBuild = async () => {
     if (isDev) {
       console.log('Watching for changes...');
       await ctx.watch();
-      // Pindahkan copyFile setelah watch
-      copyFile('src/index.html', 'dist/index.html');
     } else {
       console.log('Building for production...');
       await ctx.rebuild();
-      copyFile('src/index.html', 'dist/index.html');
     }
 
     console.log('Build completed successfully! Check dist/ folder for output.');
@@ -65,4 +62,10 @@ const startBuild = async () => {
   }
 };
 
-startBuild();
+// Jalankan proses secara berurutan
+const main = async () => {
+  await startBuild();
+  copyFile('src/index.html', 'dist/index.html'); // Pindahkan proses copyFile setelah startBuild selesai
+};
+
+main();
