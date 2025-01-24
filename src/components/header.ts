@@ -18,7 +18,7 @@ export class HeaderComponent extends LitElement {
   // Template HTML
   render() {
     return html`
-      <nav class="bg-blue-600 text-white p-4 flex gap-4">
+      <nav class="bg-blue-600 text-white p-4 flex gap-4 top-0 fixed min-w-full">
         <a href="#/" class="hover:underline">Home</a>
         <a href="#/about" class="hover:underline">About</a>
         <a href="#/help" class="hover:underline">Help</a>
