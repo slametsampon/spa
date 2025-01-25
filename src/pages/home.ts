@@ -16,13 +16,15 @@ export class HomePage extends LitElement {
   render() {
     return html`
       <app-header></app-header>
-      <main class="px-8 my-20">
+      <main
+        class="p-8 my-14 bg-gradient-to-tr from-yellow-200 via-purple-300 to-purple-200"
+      >
         <!-- Kata Pengantar -->
         <section class="mb-8">
-          <h1 class="text-4xl font-extrabold text-blue-600 mb-4">
+          <h1 class="text-3xl font-inter font-extrabold text-blue-600 mb-4">
             Halo para praktisi dan penggiat teknologi! 👋
           </h1>
-          <p class="text-gray-700 text-lg leading-relaxed">
+          <p class="text-gray-700 text-lg leading-relaxed font-roboto">
             Pernahkah Anda ingin menggabungkan teknologi modern seperti
             <strong>Single Page Application (SPA)</strong> dengan kekuatan
             <strong>Internet of Things (IoT)</strong>? Artikel ini adalah
@@ -34,10 +36,10 @@ export class HomePage extends LitElement {
 
         <!-- Kenapa SPA di IoT -->
         <section class="mb-8">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4">
+          <h2 class="text-2xl font-bold font-inter text-gray-800 mb-4">
             Kenapa SPA di IoT?
           </h2>
-          <ul class="list-disc list-inside space-y-2 text-gray-700">
+          <ul class="list-disc list-inside space-y-2 text-gray-700 font-roboto">
             <li>
               <strong>Navigasi Tanpa Reload:</strong> Menghindari pemuatan ulang
               setiap kali berpindah halaman.
@@ -59,15 +61,15 @@ export class HomePage extends LitElement {
 
         <!-- Apa yang Akan Kita Buat -->
         <section class="mb-8">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4">
+          <h2 class="text-2xl font-bold font-inter text-gray-800 mb-4">
             Apa yang Akan Kita Buat?
           </h2>
-          <p class="text-gray-700 mb-4">
+          <p class="text-gray-700 mb-4 font-roboto">
             Sebuah proyek SPA multipage dengan halaman <strong>Home</strong>,
             <strong>About</strong>, dan <strong>Help</strong>, masing-masing
             memiliki:
           </p>
-          <ul class="list-disc list-inside space-y-2 text-gray-700">
+          <ul class="list-disc list-inside space-y-2 text-gray-700 font-roboto">
             <li><strong>Header:</strong> Navbar navigasi antar halaman.</li>
             <li>
               <strong>Main Content:</strong> Konten utama yang unik untuk setiap
@@ -75,7 +77,7 @@ export class HomePage extends LitElement {
             </li>
             <li><strong>Footer:</strong> Informasi umum di bagian bawah.</li>
           </ul>
-          <p class="text-gray-700 mt-4">
+          <p class="text-gray-700 mt-4 font-roboto">
             Semua ini akan dihosting pada ESP32-C3 sebagai server, dengan opsi
             alternatif hosting di GitHub Pages untuk kebutuhan pengembangan.
           </p>
@@ -83,13 +85,13 @@ export class HomePage extends LitElement {
 
         <!-- Lingkungan Pengembangan -->
         <section class="mb-8">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4">
+          <h2 class="text-2xl font-bold text-gray-800 mb-4 font-inter">
             Lingkungan Pengembangan
           </h2>
-          <p class="text-gray-700">
+          <p class="text-gray-700 font-roboto">
             Untuk memulai, pastikan Anda memiliki perangkat dan alat berikut:
           </p>
-          <ul class="list-disc list-inside space-y-2 text-gray-700">
+          <ul class="list-disc list-inside space-y-2 text-gray-700 font-roboto">
             <li><strong>Operating System:</strong> Windows 10.</li>
             <li>
               <strong>IDE:</strong> Visual Studio Code (VS Code), dengan plugin
@@ -104,10 +106,10 @@ export class HomePage extends LitElement {
 
         <!-- Ajakan untuk Memulai -->
         <section class="text-center mt-12">
-          <h2 class="text-2xl font-bold text-blue-600 mb-4">
+          <h2 class="text-2xl font-bold text-blue-600 mb-4 font-inter">
             Mari Kita Mulai! 🚀
           </h2>
-          <p class="text-gray-700 text-lg">
+          <p class="text-gray-700 text-lg font-roboto">
             Dengan panduan ini, Anda akan memiliki pemahaman yang solid tentang
             bagaimana mengintegrasikan teknologi SPA modern dengan perangkat IoT
             untuk menciptakan aplikasi yang efisien dan fleksibel.

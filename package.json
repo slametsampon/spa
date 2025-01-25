@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "concurrently \"cross-env NODE_ENV=development node esbuild.config.js\" \"npm run start:local\"",
     "dev:full": "concurrently \"npm run tailwind:watch\" \"npm run esbuild:watch\" \"npm run start:local\"",

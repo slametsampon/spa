@@ -16,13 +16,15 @@ export class AboutPage extends LitElement {
   render() {
     return html`
       <app-header></app-header>
-      <main class="px-8 my-20">
+      <main
+        class="p-8 my-14 bg-gradient-to-tr from-orange-200 via-green-300 to-yellow-100"
+      >
         <!-- Tentang SPA dan IoT -->
         <section class="mb-8">
-          <h1 class="text-4xl font-extrabold text-blue-600 mb-4">
+          <h1 class="text-3xl font-extrabold font-inter text-blue-600 mb-4">
             Tentang SPA (Single Page Application)
           </h1>
-          <p class="text-gray-700 text-lg leading-relaxed">
+          <p class="text-gray-700 font-roboto text-lg leading-relaxed">
             Aplikasi ini didukung oleh <strong>ESP32-C3</strong>, sebuah
             perangkat IoT modern yang memungkinkan pengembangan antarmuka web
             cepat, responsif, dan efisien melalui pendekatan
@@ -32,10 +34,10 @@ export class AboutPage extends LitElement {
 
         <!-- Manfaat SPA -->
         <section class="mb-8">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4">
+          <h2 class="text-2xl font-inter font-bold text-gray-800 mb-4">
             Mengapa Memilih SPA?
           </h2>
-          <ul class="list-disc list-inside space-y-2 text-gray-700">
+          <ul class="list-disc font-roboto list-inside space-y-2 text-gray-700">
             <li>
               <strong>Interaksi Cepat:</strong> Navigasi tanpa reload halaman.
             </li>
@@ -55,7 +57,7 @@ export class AboutPage extends LitElement {
 
         <!-- Teknologi yang Digunakan -->
         <section class="mb-8">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4">
+          <h2 class="text-2xl font-inter font-bold text-gray-800 mb-4">
             Teknologi yang Digunakan
           </h2>
           <p class="text-gray-700">
@@ -83,8 +85,10 @@ export class AboutPage extends LitElement {
 
         <!-- Ajakan untuk Bereksperimen -->
         <section class="text-center mt-12">
-          <h2 class="text-2xl font-bold text-blue-600 mb-4">Coba Sendiri!</h2>
-          <p class="text-gray-700 text-lg">
+          <h2 class="text-2xl font-inter font-bold text-blue-600 mb-4">
+            Coba Sendiri!
+          </h2>
+          <p class="text-gray-700 font-roboto text-lg">
             Jadikan pengalaman Anda dalam membangun aplikasi IoT lebih seru
             dengan teknologi modern ini. Ayo mulai bereksperimen dan ciptakan
             inovasi Anda! 🚀

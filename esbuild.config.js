@@ -34,6 +34,8 @@ const buildOptions = {
   minify: isProduction,
   sourcemap: isDev || isPreRelease,
   publicPath: publicPath,
+  target: 'es2022', // Pastikan menggunakan target modern (ES2022 atau lebih tinggi)
+  tsconfig: 'tsconfig.json', // Menggunakan pengaturan dekorator dari tsconfig
   loader: {
     '.ts': 'ts',
     '.css': 'css',

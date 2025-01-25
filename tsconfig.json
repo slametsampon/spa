@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "nodenext",
+    "module": "NodeNext",
+    "target": "ES2022",
+    "experimentalDecorators": true,
+    "useDefineForClassFields": true,
+    "strict": true,
+    "esModuleInterop": true
+  }
+}
