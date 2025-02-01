@@ -1,6 +1,6 @@
-const esbuild = require('esbuild');
-const fs = require('fs');
-const path = require('path');
+import esbuild from 'esbuild';
+import fs from 'fs';
+import path from 'path';
 
 // Tentukan environment
 const isDev = process.env.NODE_ENV === 'development';
@@ -37,8 +37,12 @@ const buildOptions = {
   target: 'es2022', // Pastikan menggunakan target modern (ES2022 atau lebih tinggi)
   tsconfig: 'tsconfig.json', // Menggunakan pengaturan dekorator dari tsconfig
   loader: {
-    '.ts': 'ts',
-    '.css': 'css',
+    '.ts': 'ts', // Loader TypeScript
+    '.png': 'file', // Loader untuk PNG
+    '.jpg': 'file', // Loader untuk JPG
+    '.svg': 'file', // Loader untuk SVG
+    '.webp': 'file', // Loader WebP
+    '.ico': 'file', // Loader untuk favicon
   },
   logLevel: 'info',
 };
