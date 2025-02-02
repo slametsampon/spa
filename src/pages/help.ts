@@ -1,7 +1,10 @@
 import { LitElement, html } from 'lit';
-import '../components/header.ts';
+import { customElement } from 'lit/decorators.js';
+import '../components/navbar.ts';
 import '../components/footer.ts';
+import '../components/modal-dialog.js';
 
+@customElement('page-help')
 export class HelpPage extends LitElement {
   // Nonaktifkan Shadow DOM untuk memungkinkan Tailwind bekerja
   createRenderRoot() {
@@ -13,10 +16,37 @@ export class HelpPage extends LitElement {
     console.log('<page-help> connected');
   }
 
+  /**
+   * Membuka modal dengan mengatur properti `open` pada elemen `modal-dialog`.
+   * @private
+   */
+  private _showModal() {
+    const modal = this.querySelector('modal-dialog') as HTMLElement & {
+      isOpen: boolean;
+    };
+    if (modal) {
+      modal.isOpen = true;
+      console.log('✅ Modal dibuka, isOpen =', modal.isOpen);
+
+      setTimeout(() => {
+        console.log(
+          '🔍 Debugging setelah perubahan:',
+          modal,
+          'display:',
+          getComputedStyle(modal).display
+        );
+      }, 100);
+    } else {
+      console.error('❌ Modal tidak ditemukan!');
+    }
+  }
+
   render() {
     return html`
-      <app-header></app-header>
-      <main class="p-8 my-14 bg-gradient-to-tr from-blue-50 to-green-300">
+      <app-navbar></app-navbar>
+      <main
+        class="p-8 my-14 bg-gradient-to-tr from-blue-50 to-green-300 min-h-full relative"
+      >
         <!-- Judul Halaman -->
         <section class="mb-8">
           <h1 class="text-3xl font-inter font-extrabold text-blue-700 mb-4">
@@ -38,20 +68,25 @@ export class HelpPage extends LitElement {
                 href="https://github.com/slametsampon/spa/wiki"
                 target="_blank"
                 class="text-blue-800 font-semibold hover:underline"
-                >Dokumentasi Resmi</a
               >
+                Dokumentasi Resmi
+              </a>
             </li>
             <li>
               <a
                 href="mailto:support@spa.com"
                 class="text-blue-800 font-semibold hover:underline"
-                >Email Dukungan</a
               >
+                Email Dukungan
+              </a>
             </li>
             <li>
-              <a href="/faq" class="text-blue-800 font-semibold hover:underline"
-                >Pertanyaan yang Sering Diajukan (FAQ)</a
+              <a
+                href="/faq"
+                class="text-blue-800 font-semibold hover:underline"
               >
+                Pertanyaan yang Sering Diajukan (FAQ)
+              </a>
             </li>
           </ul>
         </section>
@@ -64,17 +99,25 @@ export class HelpPage extends LitElement {
           <p class="text-gray-700 font-roboto text-lg">
             Jangan ragu untuk menghubungi kami! Kami siap membantu Anda.
           </p>
-          <a
-            href="mailto:support@spa.com"
-            class="inline-block mt-4 bg-blue-600 font-roboto text-white py-2 px-6 rounded-2xl shadow-lg hover:bg-blue-700"
+          <button
+            class="px-6 py-3 mt-6 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+            @click=${this._showModal}
           >
             Hubungi Dukungan
-          </a>
+          </button>
         </section>
+
+        <!-- Elemen modal -->
+        <modal-dialog>
+          <div class="bg-gray-100 p-4 rounded-lg shadow">
+            <h3 class="text-lg font-semibold">Dynamic Card Title</h3>
+            <p class="text-gray-600">
+              This is the content inside the modal card.
+            </p>
+          </div>
+        </modal-dialog>
       </main>
       <app-footer></app-footer>
     `;
   }
 }
-
-customElements.define('page-help', HelpPage);

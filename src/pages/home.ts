@@ -1,7 +1,9 @@
 import { LitElement, html } from 'lit';
-import '../components/header.ts';
+import { customElement } from 'lit/decorators.js';
 import '../components/footer.ts';
+import '../components/navbar.ts';
 
+@customElement('page-home')
 export class HomePage extends LitElement {
   // Nonaktifkan Shadow DOM untuk memungkinkan Tailwind bekerja
   createRenderRoot() {
@@ -15,7 +17,7 @@ export class HomePage extends LitElement {
 
   render() {
     return html`
-      <app-header></app-header>
+      <app-navbar></app-navbar>
       <main
         class="p-8 my-14 bg-gradient-to-tr from-yellow-200 via-purple-300 to-purple-200"
       >
@@ -120,5 +122,3 @@ export class HomePage extends LitElement {
     `;
   }
 }
-
-customElements.define('page-home', HomePage);

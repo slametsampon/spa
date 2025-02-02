@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import '../components/header.ts';
+import '../components/navbar.ts';
 import '../components/footer.ts';
 
 /**
@@ -43,9 +43,9 @@ export class AboutPage extends LitElement {
    */
   render() {
     return html`
-      <app-header></app-header>
+      <app-navbar></app-navbar>
       <main
-        class="p-8 my-14 bg-gradient-to-tr from-orange-200 via-green-300 to-yellow-100"
+        class="px-8 py-12 my-14 bg-gradient-to-tr from-orange-200 via-green-300 to-yellow-100"
       >
         <!-- Tentang SPA dan IoT -->
         <section class="mb-8">
