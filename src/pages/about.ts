@@ -1,18 +1,46 @@
 import { LitElement, html } from 'lit';
+import { property, customElement } from 'lit/decorators.js';
 import '../components/header.ts';
 import '../components/footer.ts';
 
+/**
+ * @customElement page-about
+ * @description Komponen halaman "Tentang" yang menjelaskan konsep SPA (Single Page Application).
+ * Komponen ini menggunakan Light DOM agar kompatibel dengan Tailwind CSS.
+ */
+@customElement('page-about')
 export class AboutPage extends LitElement {
-  // Nonaktifkan Shadow DOM untuk memungkinkan Tailwind bekerja
+  /**
+   * Nonaktifkan Shadow DOM untuk menggunakan Light DOM.
+   * Hal ini memungkinkan integrasi penuh dengan Tailwind CSS.
+   * @returns {this} Mengembalikan instance kelas untuk Light DOM.
+   */
   createRenderRoot() {
-    return this; // Menggunakan Light DOM
+    return this;
   }
 
+  /**
+   * Properti reaktif `title` untuk menampilkan judul halaman.
+   * Dapat diatur langsung melalui atribut HTML.
+   * @type {string}
+   * @default 'Tentang SPA (Single Page Application)'
+   */
+  @property({ type: String })
+  title: string = 'Tentang SPA (Single Page Application)';
+
+  /**
+   * Lifecycle method LitElement.
+   * Dipanggil saat elemen ditambahkan ke DOM.
+   */
   connectedCallback() {
     super.connectedCallback();
     console.log('<page-about> connected');
   }
 
+  /**
+   * Fungsi render untuk menghasilkan konten HTML dari komponen.
+   * @returns {TemplateResult} Template HTML yang akan dirender.
+   */
   render() {
     return html`
       <app-header></app-header>
@@ -22,7 +50,7 @@ export class AboutPage extends LitElement {
         <!-- Tentang SPA dan IoT -->
         <section class="mb-8">
           <h1 class="text-3xl font-extrabold font-inter text-blue-600 mb-4">
-            Tentang SPA (Single Page Application)
+            ${this.title}
           </h1>
           <p class="text-gray-700 font-roboto text-lg leading-relaxed">
             Aplikasi ini didukung oleh <strong>ESP32-C3</strong>, sebuah
@@ -99,5 +127,3 @@ export class AboutPage extends LitElement {
     `;
   }
 }
-
-customElements.define('page-about', AboutPage);
