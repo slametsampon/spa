@@ -7,54 +7,9 @@ export class ModalDialog extends LitElement {
     :host {
       display: block;
     }
-    .overlay {
-      position: fixed; /* ✅ Pastikan overlay menutupi seluruh layar */
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 50; /* ✅ Pastikan modal muncul di atas elemen lain */
-    }
-    .modal-content {
-      background: white;
-      border-radius: 8px;
-      padding: 24px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      width: 400px;
-      max-width: 90%;
-      position: relative; /* ✅ Pastikan tombol close bisa absolute */
-    }
-    .close-button {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 32px;
-      height: 32px;
-      background: white;
-      border: none;
-      border-radius: 50%;
-      font-size: 20px;
-      font-weight: bold;
-      color: #333;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-    .close-button:hover {
-      background: #ddd;
-    }
-    .close-button:hover {
-      background: #ddd;
-    }
   `;
 
-  private _isOpen = false;
+  private _isOpen = false; // ✅ Variabel internal untuk kontrol modal
 
   @property({ type: Boolean })
   get isOpen() {
@@ -62,48 +17,61 @@ export class ModalDialog extends LitElement {
   }
 
   set isOpen(value: boolean) {
-    console.log("⚡ Properti 'isOpen' diubah menjadi:", value);
+    console.log(`⚡ Mengubah isOpen menjadi: ${value}`);
+    const oldValue = this._isOpen;
     this._isOpen = value;
-    this.requestUpdate();
+    this.requestUpdate('isOpen', oldValue); // ✅ Paksa pembaruan
   }
 
   createRenderRoot() {
     return this; // ✅ Gunakan Light DOM agar Tailwind bekerja
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    this.style.display = 'none'; // ✅ Paksa modal agar tidak muncul saat halaman dimuat
-    console.log('🛠️ Modal tertutup saat halaman dimuat');
-  }
-
   updated(changedProperties: Map<string, any>) {
-    console.log('updated-run');
+    console.log('modal-dialog:updated-run');
     if (changedProperties.has('isOpen')) {
-      console.log('🔄 Modal status berubah:', this.isOpen);
-
-      if (this.isOpen) {
-        this.style.display = 'block'; // ✅ Paksa modal muncul
-        this.offsetHeight; // ✅ Magic Trick: Paksa browser merender ulang elemen
-        console.log('✅ Modal ditampilkan setelah perubahan');
-      } else {
-        this.style.display = 'none'; // ✅ Sembunyikan modal saat ditutup
-        console.log('❌ Modal disembunyikan');
-      }
+      console.log(`🔄 Modal State: isOpen = ${this.isOpen}`);
+      this.style.display = this.isOpen ? 'flex' : 'none';
     }
   }
 
   private _closeModal() {
     console.log('❌ Menutup modal');
     this.isOpen = false;
+    this.requestUpdate();
+  }
+
+  setContent(content: HTMLElement) {
+    const modalContent = this.querySelector('#modal-content');
+    if (modalContent) {
+      modalContent.innerHTML = ''; // Bersihkan konten sebelumnya
+      modalContent.appendChild(content); // Tambahkan konten baru
+    }
   }
 
   render() {
     return html`
-      <div class="overlay" @click=${this._closeModal}>
-        <div class="modal-content" @click=${(e: Event) => e.stopPropagation()}>
-          <button class="close-button" @click=${this._closeModal}>✕</button>
-          <slot></slot>
+      <div
+        class="${this.isOpen
+          ? 'fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50'
+          : 'hidden'}"
+      >
+        <div
+          class="bg-white rounded-lg shadow-lg w-[400px] max-w-[90%] p-6 relative flex flex-col items-center"
+        >
+          <!-- Tombol Close -->
+          <button
+            class="absolute top-2 right-2 w-8 h-8 border-none rounded-full bg-red-600 text-white cursor-pointer flex shadow-md justify-center items-center hover:bg-red-700"
+            @click=${this._closeModal}
+          >
+            ✕
+          </button>
+
+          <!-- Wrapper Konten -->
+          <div
+            id="modal-content"
+            class="w-full p-4 flex flex-col items-center bg-green-200 overflow-hidden"
+          ></div>
         </div>
       </div>
     `;
