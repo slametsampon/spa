@@ -56,9 +56,7 @@ export class ModalDialog extends LitElement {
           ? 'fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50'
           : 'hidden'}"
       >
-        <div
-          class="bg-white rounded-lg shadow-lg w-[400px] max-w-[90%] p-6 relative flex flex-col items-center"
-        >
+        <div class="p-6 relative flex flex-col items-center">
           <!-- Tombol Close -->
           <button
             class="absolute top-2 right-2 w-8 h-8 border-none rounded-full bg-red-600 text-white cursor-pointer flex shadow-md justify-center items-center hover:bg-red-700"
@@ -68,10 +66,7 @@ export class ModalDialog extends LitElement {
           </button>
 
           <!-- Wrapper Konten -->
-          <div
-            id="modal-content"
-            class="w-full p-4 flex flex-col items-center bg-green-200 overflow-hidden"
-          ></div>
+          <div id="modal-content"></div>
         </div>
       </div>
     `;

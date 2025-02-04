@@ -102,7 +102,7 @@ export class Navbar extends LitElement {
   render() {
     return html`
       <nav
-        class="container px-3 mx-auto flex justify-between items-center bg-blue-600 text-white shadow-md fixed top-0 left-0 min-w-full"
+        class="container px-3 mx-auto flex justify-between items-center bg-blue-600 text-white shadow-md fixed top-0 left-0 min-w-full z-10"
       >
         <!-- Logo -->
         <a href="#/" class="flex flex-row py-1">
