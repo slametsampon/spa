@@ -2,8 +2,8 @@ import { LitElement, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import '../components/navbar.ts';
 import '../components/footer.ts';
-import '../components/modal-dialog';
-import '../components/card-component'; // ✅ Import komponen card
+import '../components/modal-dialog.ts';
+import '../components/card-component.ts'; // ✅ Import komponen card
 
 @customElement('page-help')
 export class HelpPage extends LitElement {
