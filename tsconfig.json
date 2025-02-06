@@ -3,7 +3,6 @@
     "moduleResolution": "nodenext",
     "module": "NodeNext",
     "target": "ES2022",
-    "allowImportingTsExtensions": true,
     "experimentalDecorators": true,
     "useDefineForClassFields": true,
     "strict": true,

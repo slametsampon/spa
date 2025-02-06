@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import { AuthService } from '../../utils/auth-service.ts';
+import { AuthService } from '../../utils/auth-service.js';
 
 @customElement('login-page')
 export class LoginPage extends LitElement {
@@ -39,7 +39,7 @@ export class LoginPage extends LitElement {
   async login() {
     const success = await AuthService.login(this.username, this.password);
     if (success) {
-      window.location.href = '/dashboard';
+      window.location.href = '#/dashboard';
     } else {
       alert('Login gagal!');
     }

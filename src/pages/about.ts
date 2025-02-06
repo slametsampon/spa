@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { AuthService } from '../utils/auth-service.js';
 import '../components/navbar.ts';
 import '../components/footer.ts';
 
@@ -35,6 +36,12 @@ export class AboutPage extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     console.log('<page-about> connected');
+    // Cek apakah user login
+    if (!AuthService.isAuthenticated()) {
+      window.location.href = '/#/auth/login';
+    } else if (!AuthService.hasPermission('Update')) {
+      window.location.href = '#/access-denied';
+    }
   }
 
   /**

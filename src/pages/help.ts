@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { AuthService } from '../utils/auth-service.js';
 import '../components/navbar.ts';
 import '../components/footer.ts';
 import '../components/modal-dialog.ts';
@@ -9,6 +10,17 @@ import '../components/card-component.ts'; // ✅ Import komponen card
 export class HelpPage extends LitElement {
   createRenderRoot() {
     return this; // ✅ Gunakan Light DOM agar Tailwind bekerja
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    // Cek apakah user login dan memiliki akses
+    if (!AuthService.isAuthenticated()) {
+      window.location.href = '#/auth/login';
+    } else if (!AuthService.hasPermission('Public')) {
+      window.location.href = '#/access-denied';
+    }
   }
 
   private _showModalDialog() {

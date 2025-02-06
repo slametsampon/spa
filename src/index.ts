@@ -1,7 +1,9 @@
-import Router from './router.ts';
+import Router from './router.js';
 import './pages/home.ts';
 import './pages/help.ts';
 import './pages/about.ts';
+import './pages/auth/login.ts';
+import './pages/access-denied.ts';
 
 // Inisialisasi router
 const router = new Router();
@@ -24,6 +26,24 @@ if (app) {
   router.addRoute('#/help', () => {
     document.body.innerHTML = `
       <page-help></page-help>
+    `;
+  });
+  // Tambahkan rute untuk Login
+  router.addRoute('#/auth/login', () => {
+    document.body.innerHTML = `
+      <login-page></login-page>
+    `;
+  });
+  // Tambahkan rute untuk Dashboard
+  router.addRoute('#/dashboard', () => {
+    document.body.innerHTML = `
+      <page-dashboard></page-dashboard>
+    `;
+  });
+  // Tambahkan rute untuk access-denied
+  router.addRoute('#/access-denied', () => {
+    document.body.innerHTML = `
+      <access-denied></access-denied>
     `;
   });
 }

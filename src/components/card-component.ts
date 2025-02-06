@@ -11,7 +11,9 @@ export class CardComponent extends LitElement {
 
   render() {
     return html`
-      <div class="max-w-full p-4 bg-green-200 rounded-lg shadow-lg">
+      <div
+        class="max-w-full p-4 bg-gradient-to-tr from-blue-200 via-green-200 to-yellow-100 rounded-lg shadow-lg"
+      >
         <h2 class="text-lg font-bold text-gray-700">
           ${this.data.tagname || 'Unknown'}
         </h2>

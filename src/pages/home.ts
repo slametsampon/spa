@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { AuthService } from '../utils/auth-service.js';
 import '../components/footer.ts';
 import '../components/navbar.ts';
 
@@ -13,6 +14,10 @@ export class HomePage extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     console.log('<page-home> connected');
+    // Redirect ke login jika tidak login
+    // if (!AuthService.isAuthenticated()) {
+    //   window.location.href = '#/auth/login';
+    // }
   }
 
   render() {
