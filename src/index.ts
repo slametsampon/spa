@@ -3,7 +3,9 @@ import './pages/home.ts';
 import './pages/help.ts';
 import './pages/about.ts';
 import './pages/auth/login.ts';
+import './pages/auth/register.ts';
 import './pages/access-denied.ts';
+import './pages/dashboard.js';
 
 // Inisialisasi router
 const router = new Router();
@@ -32,6 +34,12 @@ if (app) {
   router.addRoute('#/auth/login', () => {
     document.body.innerHTML = `
       <login-page></login-page>
+    `;
+  });
+  // Tambahkan rute untuk register
+  router.addRoute('#/auth/register', () => {
+    document.body.innerHTML = `
+      <register-page></register-page>
     `;
   });
   // Tambahkan rute untuk Dashboard

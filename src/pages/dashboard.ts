@@ -2,8 +2,8 @@ import { LitElement, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { AuthService } from '../utils/auth-service.js';
 import { StorageHelper } from '../utils/storage-helper.js';
-import '../components/navbar.ts';
-import '../components/footer.ts';
+import '../components/navbar.js';
+import '../components/footer.js';
 
 /**
  * @customElement page-dashboard
@@ -93,14 +93,6 @@ export class DashboardPage extends LitElement {
 
         <!-- Fitur berdasarkan role -->
         <section class="mt-6">${this.renderFeatures()}</section>
-
-        <!-- Tombol Logout -->
-        <button
-          class="bg-red-500 text-white px-4 py-2 rounded mt-6 hover:bg-red-600 transition"
-          @click=${this.logout}
-        >
-          Logout
-        </button>
       </main>
       <app-footer></app-footer>
     `;

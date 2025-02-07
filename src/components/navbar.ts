@@ -1,5 +1,7 @@
 import { LitElement, html } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property, customElement, state } from 'lit/decorators.js';
+import { AuthService } from '../utils/auth-service.js';
+import { StorageHelper } from '../utils/storage-helper.js';
 
 /**
  * Navbar component for the application
@@ -17,9 +19,22 @@ export class Navbar extends LitElement {
    * @type {Array<{path: string, label: string}>}
    */
   @property({ type: Array }) routes = [
+    { path: '#/dashboard', label: 'Dashboard' },
     { path: '#/about', label: 'About' },
     { path: '#/help', label: 'Help' },
   ];
+
+  /**
+   * @state
+   * @description Menyimpan status login user.
+   */
+  @state() public isLoggedIn: boolean = false;
+
+  /**
+   * @state
+   * @description Menyimpan nama pengguna yang login.
+   */
+  @state() public username: string = '';
 
   /**
    * Overrides LitElement's shadow DOM to use Light DOM.
@@ -37,7 +52,18 @@ export class Navbar extends LitElement {
    */
   connectedCallback() {
     super.connectedCallback();
+    this.checkAuthStatus();
     console.log('<app-navbar> connected');
+  }
+
+  /**
+   * Mengecek apakah pengguna sudah login dan memperbarui state.
+   */
+  checkAuthStatus() {
+    this.isLoggedIn = AuthService.isAuthenticated();
+    this.username = this.isLoggedIn
+      ? StorageHelper.getItem('username') || ''
+      : '';
   }
 
   /**
@@ -93,6 +119,16 @@ export class Navbar extends LitElement {
     userMenuLogoutButton.addEventListener('click', () => {
       userMenuLogout.classList.toggle('hidden');
     });
+  }
+
+  /**
+   * Fungsi logout untuk menghapus session dan mengarahkan ke halaman login.
+   */
+  logout() {
+    AuthService.logout();
+    this.isLoggedIn = false;
+    this.username = '';
+    window.location.href = '#/auth/login';
   }
 
   /**
@@ -158,31 +194,59 @@ export class Navbar extends LitElement {
           </div>
           <!-- User Section -->
           <div class="relative">
-            <button
-              id="user-menu-logout-button"
-              class="flex items-center space-x-2 focus:outline-none bg-orange-600 rounded-full font-bold"
-            >
-              <div
-                class="bg-orange-600 w-10 h-10 rounded-full flex justify-center items-center text-white font-bold uppercase italic underline"
-              >
-                U
-              </div>
-            </button>
-            <div
-              id="user-menu-logout"
-              class="hidden absolute right-0 mt-2 w-30 bg-white text-gray-800 shadow-lg rounded-md"
-            >
-              <a
-                href="pages/auth/login.html"
-                class="block px-4 py-2 hover:bg-gray-200"
-                >Login</a
-              >
-              <a
-                href="pages/auth/register.html"
-                class="block px-4 py-2 hover:bg-gray-200"
-                >Register</a
-              >
-            </div>
+            ${this.isLoggedIn
+              ? html`
+                  <!-- Jika sudah login -->
+                  <button
+                    id="user-menu-logout-button"
+                    class="flex items-center space-x-2 focus:outline-none bg-orange-600 rounded-full font-bold"
+                  >
+                    <div
+                      class="bg-orange-600 w-10 h-10 rounded-full flex justify-center items-center text-white font-bold uppercase italic underline"
+                    >
+                      ${this.username.charAt(0)}
+                    </div>
+                  </button>
+                  <div
+                    id="user-menu-logout"
+                    class="hidden absolute right-0 mt-2 w-30 bg-white text-gray-800 shadow-lg rounded-md"
+                  >
+                    <button
+                      @click=${this.logout}
+                      class="block w-full text-left px-4 py-2 hover:bg-gray-200"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                `
+              : html`
+                  <!-- Jika belum login -->
+                  <button
+                    id="user-menu-logout-button"
+                    class="flex items-center space-x-2 focus:outline-none bg-orange-600 rounded-full font-bold"
+                  >
+                    <div
+                      class="bg-orange-600 w-10 h-10 rounded-full flex justify-center items-center text-white text-xl font-bold"
+                    >
+                      -
+                    </div>
+                  </button>
+                  <div
+                    id="user-menu-logout"
+                    class="hidden absolute right-0 mt-2 w-30 bg-white text-gray-800 shadow-lg rounded-md"
+                  >
+                    <a
+                      href="#/auth/login"
+                      class="block px-4 py-2 hover:bg-gray-200"
+                      >Login</a
+                    >
+                    <a
+                      href="#/auth/register"
+                      class="block px-4 py-2 hover:bg-gray-200"
+                      >Register</a
+                    >
+                  </div>
+                `}
           </div>
         </div>
       </nav>
