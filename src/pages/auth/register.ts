@@ -5,98 +5,46 @@ import { StorageHelper } from '../../utils/storage-helper.js';
 import users from '../../assets/data/users.js';
 import '../../components/navbar.js';
 import '../../components/footer.ts';
+import '../../components/custom-input'; // ✅ Impor custom-input untuk digunakan di form
 
-/**
- * @customElement register-page
- * @description Halaman pendaftaran pengguna baru.
- */
 @customElement('register-page')
 export class RegisterPage extends LitElement {
-  public username = '';
-  public password = '';
-  public confirmPassword = '';
-  public role = 'guest';
-  public message = '';
+  @property({ type: String }) username = '';
+  @property({ type: String }) password = '';
+  @property({ type: String }) confirmPassword = '';
+  @property({ type: String }) role = 'guest';
+  @property({ type: String }) message = '';
 
   createRenderRoot() {
     return this;
   }
 
-  /**
-   * @description Menangani input pengguna dan mengupdate nilai.
-   * @param {Event} event - Event dari input field.
-   */
-  handleInput(event: Event) {
-    const target = event.target as HTMLInputElement;
-    (this as any)[target.name] = target.value.trim();
-
-    // 🔹 Hapus pesan error saat user mulai mengetik ulang
-    document.getElementById(`${target.name}Error`)!.innerText = '';
-  }
-
-  /**
-   * @description Menampilkan error langsung di layar.
-   */
-  showErrorMessage(id: string, message: string) {
-    const errorElement = document.getElementById(id);
-    if (errorElement) {
-      errorElement.innerText = message;
-    }
-  }
-
-  /**
-   * @description Menyimpan pengguna baru ke dalam localStorage setelah validasi sukses.
-   */
-  register() {
+  private _register() {
     console.log("[register] Tombol 'Daftar' ditekan");
 
-    let isValid = true;
-
-    // 🔹 Reset pesan error sebelumnya
-    this.showErrorMessage('usernameError', '');
-    this.showErrorMessage('passwordError', '');
-    this.showErrorMessage('confirmPasswordError', '');
-
-    // 🔹 Validasi username
     if (!this.username) {
-      this.showErrorMessage('usernameError', '❌ Username wajib diisi!');
-      isValid = false;
+      this.message = '❌ Username wajib diisi!';
+      this.requestUpdate();
+      return;
     } else if (users.some((u) => u.username === this.username)) {
-      this.showErrorMessage('usernameError', '❌ Username sudah digunakan!');
-      isValid = false;
+      this.message = '❌ Username sudah digunakan!';
+      this.requestUpdate();
+      return;
     }
 
-    // 🔹 Validasi password
-    if (!this.password) {
-      this.showErrorMessage('passwordError', '❌ Password wajib diisi!');
-      isValid = false;
-    } else if (this.password.length < 6) {
-      this.showErrorMessage('passwordError', '❌ Password minimal 6 karakter!');
-      isValid = false;
+    if (!this.password || this.password.length < 6) {
+      this.message = '❌ Password minimal 6 karakter!';
+      this.requestUpdate();
+      return;
     }
 
-    // 🔹 Validasi konfirmasi password
-    if (!this.confirmPassword) {
-      this.showErrorMessage(
-        'confirmPasswordError',
-        '❌ Konfirmasi password wajib diisi!'
-      );
-      isValid = false;
-    } else if (this.password !== this.confirmPassword) {
-      this.showErrorMessage(
-        'confirmPasswordError',
-        '❌ Password dan Konfirmasi Password tidak cocok!'
-      );
-      isValid = false;
-    }
-
-    if (!isValid) {
-      console.log('[register] Validasi gagal, registrasi dihentikan.');
+    if (this.password !== this.confirmPassword) {
+      this.message = '❌ Password dan Konfirmasi Password tidak cocok!';
+      this.requestUpdate();
       return;
     }
 
     console.log('[register] Validasi sukses, menyimpan data...');
-
     const passwordHash = CryptoJS.SHA256(this.password).toString();
 
     users.push({
@@ -118,47 +66,57 @@ export class RegisterPage extends LitElement {
     return html`
       <app-navbar></app-navbar>
       <main
-        class="p-8 my-14 bg-gradient-to-tr from-gray-100 to-gray-300 min-h-screen"
+        class="p-8 my-14 bg-gradient-to-tr from-gray-100 to-gray-300 min-h-screen flex flex-col items-center"
       >
-        <h1 class="text-3xl font-extrabold text-blue-700">Registrasi</h1>
-        <p class="text-gray-700">Buat akun baru untuk mengakses sistem.</p>
+        <div class="bg-white shadow-lg rounded-2xl p-8 w-96">
+          <h1 class="text-4xl font-bold text-center text-green-600 mb-6">
+            📝 Registrasi
+          </h1>
+          <p class="text-gray-700 text-center">
+            Buat akun baru untuk mengakses sistem.
+          </p>
 
-        <div class="mt-6">
           <!-- 🔹 Input Username -->
-          <input
-            class="border p-2 rounded w-64 mb-2"
+          <custom-input
+            label="Username"
             type="text"
-            name="username"
-            placeholder="Username"
-            @input=${this.handleInput}
-          />
-          <p id="usernameError" class="text-red-500 text-sm"></p>
+            .value="${this.username}"
+            .onInput="${(e: InputEvent) =>
+              (this.username = (e.target as HTMLInputElement).value.trim())}"
+            required
+            onlyAlphanumeric
+          ></custom-input>
 
           <!-- 🔹 Input Password -->
-          <input
-            class="border p-2 rounded w-64 mb-2"
+          <custom-input
+            label="Password"
             type="password"
-            name="password"
-            placeholder="Password (min. 6 karakter)"
-            @input=${this.handleInput}
-          />
-          <p id="passwordError" class="text-red-500 text-sm"></p>
+            .value="${this.password}"
+            .onInput="${(e: InputEvent) =>
+              (this.password = (e.target as HTMLInputElement).value.trim())}"
+            required
+            minLength="6"
+          ></custom-input>
 
           <!-- 🔹 Input Konfirmasi Password -->
-          <input
-            class="border p-2 rounded w-64 mb-2"
+          <custom-input
+            label="Konfirmasi Password"
             type="password"
-            name="confirmPassword"
-            placeholder="Konfirmasi Password"
-            @input=${this.handleInput}
-          />
-          <p id="confirmPasswordError" class="text-red-500 text-sm"></p>
+            .value="${this.confirmPassword}"
+            .onInput="${(e: InputEvent) =>
+              (this.confirmPassword = (
+                e.target as HTMLInputElement
+              ).value.trim())}"
+            required
+          ></custom-input>
 
           <!-- 🔹 Pilihan Role -->
+          <label class="block text-gray-700 font-semibold mt-3">Role</label>
           <select
-            class="border p-2 rounded w-64 mb-2"
+            class="border-2 rounded-xl w-full p-3 text-gray-700 focus:outline-none focus:ring-4 focus:ring-green-300 bg-gray-100 shadow-inner"
             name="role"
-            @change=${this.handleInput}
+            @change="${(e: Event) =>
+              (this.role = (e.target as HTMLSelectElement).value)}"
           >
             <option value="guest">Guest</option>
             <option value="user">User</option>
@@ -167,15 +125,15 @@ export class RegisterPage extends LitElement {
 
           <!-- 🔹 Tombol Register -->
           <button
-            class="bg-green-500 text-white px-4 py-2 rounded mt-2 hover:bg-green-600"
-            @click=${this.register}
+            class="w-full mt-4 bg-gradient-to-r from-green-500 to-blue-600 text-white py-3 rounded-xl text-lg font-semibold transition-transform transform hover:scale-105 shadow-md"
+            @click="${this._register}"
           >
-            Daftar
+            ✅ Daftar
           </button>
-        </div>
 
-        <!-- 🔹 Pesan Notifikasi -->
-        <p class="mt-4 text-red-500">${this.message}</p>
+          <!-- 🔹 Pesan Notifikasi -->
+          <p class="mt-4 text-red-500 text-center">${this.message}</p>
+        </div>
       </main>
       <app-footer></app-footer>
     `;

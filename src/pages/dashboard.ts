@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 import { AuthService } from '../utils/auth-service.js';
 import { StorageHelper } from '../utils/storage-helper.js';
 import '../components/navbar.js';

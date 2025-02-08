@@ -20,6 +20,7 @@ export class Navbar extends LitElement {
    */
   @property({ type: Array }) routes = [
     { path: '#/dashboard', label: 'Dashboard' },
+    { path: '#/config', label: 'Config' },
     { path: '#/about', label: 'About' },
     { path: '#/help', label: 'Help' },
   ];

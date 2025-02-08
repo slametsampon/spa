@@ -6,6 +6,7 @@ import './pages/auth/login.ts';
 import './pages/auth/register.ts';
 import './pages/access-denied.ts';
 import './pages/dashboard.js';
+import './pages/config.js';
 
 // Inisialisasi router
 const router = new Router();
@@ -46,6 +47,12 @@ if (app) {
   router.addRoute('#/dashboard', () => {
     document.body.innerHTML = `
       <page-dashboard></page-dashboard>
+    `;
+  });
+  // Tambahkan rute untuk Config
+  router.addRoute('#/config', () => {
+    document.body.innerHTML = `
+      <page-config></page-config>
     `;
   });
   // Tambahkan rute untuk access-denied
