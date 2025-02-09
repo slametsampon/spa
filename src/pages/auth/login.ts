@@ -14,6 +14,7 @@ export class LoginPage extends LitElement {
 
   private async _login() {
     console.log('[login] Tombol "Login" ditekan');
+    console.log(`User name : ${this.username}, Password : ${this.password}`);
 
     if (!this.username || !this.password) {
       console.log('[login] Validasi gagal, login dihentikan.');
@@ -46,8 +47,7 @@ export class LoginPage extends LitElement {
             label="Username"
             type="text"
             .value="${this.username}"
-            .onInput="${(e: InputEvent) =>
-              (this.username = (e.target as HTMLInputElement).value.trim())}"
+            @value-changed="${(e: CustomEvent) => (this.username = e.detail)}"
             required
             onlyAlphanumeric
           ></custom-input>
@@ -56,8 +56,7 @@ export class LoginPage extends LitElement {
             label="Password"
             type="password"
             .value="${this.password}"
-            .onInput="${(e: InputEvent) =>
-              (this.password = (e.target as HTMLInputElement).value.trim())}"
+            @value-changed="${(e: CustomEvent) => (this.password = e.detail)}"
             required
             minLength="6"
           ></custom-input>

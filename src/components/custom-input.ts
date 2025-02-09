@@ -4,8 +4,7 @@ import { customElement, property } from 'lit/decorators.js';
 @customElement('custom-input')
 export class CustomInput extends LitElement {
   @property({ type: String }) label = '';
-  @property({ type: String })
-  type:
+  @property({ type: String }) type:
     | 'text'
     | 'password'
     | 'email'
@@ -19,14 +18,29 @@ export class CustomInput extends LitElement {
     | 'week'
     | 'time'
     | 'color' = 'text';
-  @property({ type: String }) value: string | number = '';
-  @property({ attribute: false }) onInput: (event: InputEvent) => void =
-    () => {};
+
+  @property({ type: String }) private _value: string | number = '';
+
+  set value(newValue: string | number) {
+    console.log(`🔍 Setter dipanggil, value baru:`, newValue); // Debug tambahan
+
+    const oldValue = this._value;
+    this._value = newValue;
+
+    this.requestUpdate('value', oldValue); // Paksa update meskipun nilai sama
+    this._validateInput(); // Pastikan validasi tetap berjalan
+  }
+
+  get value() {
+    return this._value;
+  }
+
   @property({ type: String }) errorMessage = '';
   @property({ type: Boolean }) required = false;
   @property({ type: Number }) minLength = 0;
   @property({ type: Boolean }) onlyAlphanumeric = false;
   @property({ type: Boolean }) showPassword = false;
+  @property({ type: Boolean }) isEditing = false;
 
   createRenderRoot() {
     return this; // Menggunakan Light DOM agar Tailwind bisa bekerja
@@ -34,34 +48,56 @@ export class CustomInput extends LitElement {
 
   private _togglePassword() {
     this.showPassword = !this.showPassword;
+    this.requestUpdate(); // ✅ Paksa UI diperbarui setelah perubahan
   }
 
   private _validateInput() {
+    // 🚀 Jangan validasi jika form belum mulai diedit
+    if (!this.isEditing) {
+      console.log(
+        `🔍 SKIP Validasi (isEditing = false) - Label: ${this.label}`
+      );
+      return;
+    }
+
     let error = '';
 
-    if (this.required && !this.value) {
+    if (
+      this.required &&
+      (this.value === '' || this.value === null || this.value === undefined)
+    ) {
       error = `❌ ${this.label} wajib diisi!`;
-    } else if (
-      this.minLength > 0 &&
-      String(this.value).length < this.minLength
-    ) {
-      error = `❌ ${this.label} minimal ${this.minLength} karakter!`;
-    } else if (
-      this.onlyAlphanumeric &&
-      !/^[a-zA-Z0-9]+$/.test(String(this.value))
-    ) {
-      error = `❌ ${this.label} hanya boleh huruf dan angka!`;
     }
 
     this.errorMessage = error;
     this.requestUpdate();
+
+    console.log(
+      `✅ Final Debug - Label: ${this.label}, Value:`,
+      this.value,
+      'Error:',
+      error
+    );
   }
 
   private _handleInput(event: InputEvent) {
     const target = event.target as HTMLInputElement;
     this.value = target.value;
+
+    console.log(
+      `🔍 DEBUG _handleInput() - Value Changed (Before Dispatch):`,
+      this.value
+    );
+
+    this.dispatchEvent(
+      new CustomEvent('value-changed', {
+        detail: this.value,
+        bubbles: true,
+        composed: true,
+      })
+    );
+
     this._validateInput();
-    this.onInput(event);
   }
 
   render() {

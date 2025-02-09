@@ -1,7 +1,6 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import ConfigDevicesLocal from '../assets/data/config-devices-local.js';
-import { DeviceConfig } from '../type.js';
 import '../components/custom-input';
 
 // Pilihan tipe perangkat
@@ -34,27 +33,27 @@ export class DynamicConfigForm extends LitElement {
     return this; // Menggunakan Light DOM agar Tailwind bisa bekerja
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.isEditing = false; // 🚀 Pastikan validasi tidak berjalan sebelum ada input
+  }
+
   private _validateForm(): boolean {
+    if (!this.isEditing) return true;
+
     this.errorMessages = {}; // Reset error sebelumnya
     let isValid = true;
 
-    Object.keys(ConfigDevicesLocal[0]).forEach((key) => {
+    Object.keys(this.newConfig).forEach((key) => {
       const value = this.newConfig[key];
 
-      if (!value || String(value).trim() === '') {
+      if (value === '' || value === null || value === undefined) {
         this.errorMessages[key] = `❌ ${key} wajib diisi!`;
-        isValid = false;
-      } else if (
-        typeof ConfigDevicesLocal[0][key] === 'number' &&
-        isNaN(Number(value))
-      ) {
-        this.errorMessages[key] = `❌ ${key} harus berupa angka!`;
         isValid = false;
       }
     });
 
     this.requestUpdate();
-    console.log('this.errorMessages :', this.errorMessages);
     return isValid;
   }
 
@@ -62,37 +61,45 @@ export class DynamicConfigForm extends LitElement {
     const selectedTag = (event.target as HTMLSelectElement).value;
     this.selectedTagname = selectedTag;
 
-    // Cari data berdasarkan tagname
+    // Ambil data perangkat berdasarkan tagname
     const device = ConfigDevicesLocal.find((d) => d.tagname === selectedTag);
     if (device) {
       this.newConfig = { ...device };
-      this.isEditing = true;
+      this.isEditing = true; // ✅ Hanya aktif saat pengguna memilih perangkat
     } else {
       this.newConfig = {};
       this.isEditing = false;
     }
 
+    console.log('🔍 DEBUG _handleSelectTagname() - newConfig:', this.newConfig);
     this.requestUpdate();
   }
 
-  private _handleInput(event: InputEvent, key: string) {
-    const target = event.target as HTMLInputElement | HTMLSelectElement;
-    const value =
-      target.type === 'number' ? Number(target.value) : target.value;
+  private _handleInput(event: CustomEvent, key: string) {
+    const value = event.detail;
+
+    console.log(`🔍 DEBUG _handleInput() - Key: ${key}, Value:`, value);
+
     this.newConfig = { ...this.newConfig, [key]: value };
-    this.errorMessages[key] = ''; // Hapus pesan error saat pengguna mulai mengetik
+
+    this.errorMessages[key] = ''; // Hapus error jika pengguna sudah mengisi
+    this.requestUpdate();
   }
 
   private _saveConfig() {
+    this.isEditing = true; // ✅ Pastikan validasi berjalan hanya saat Simpan ditekan
+
     if (!this._validateForm()) return;
-    console.log('Perangkat Baru Tersimpan:', this.newConfig);
-    alert('✅ Perangkat berhasil ditambahkan!');
-    this.newConfig = {}; // Reset form setelah sukses
+
+    console.log('✅ Data Tersimpan:', this.newConfig);
+    alert('✅ Perangkat berhasil diperbarui!');
+
+    // Jangan reset newConfig agar input tetap terlihat benar
+    this.errorMessages = {};
     this.requestUpdate();
   }
 
   render() {
-    console.log('this.newConfig : ', this.newConfig);
     return html`
       <div
         class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
@@ -119,8 +126,9 @@ export class DynamicConfigForm extends LitElement {
           <custom-input
             label="Tagname"
             type="text"
-            .value="${this.newConfig.tagname || ''}"
-            .onInput="${(e: InputEvent) => this._handleInput(e, 'tagname')}"
+            .value="${String(this.newConfig?.tagname || '')}"
+            @value-changed="${(e: CustomEvent) =>
+              this._handleInput(e, 'tagname')}"
             required
           ></custom-input>
           ${this.errorMessages['tagname']
@@ -133,8 +141,9 @@ export class DynamicConfigForm extends LitElement {
           <custom-input
             label="Description"
             type="text"
-            .value="${this.newConfig.description || ''}"
-            .onInput="${(e: InputEvent) => this._handleInput(e, 'description')}"
+            .value="${String(this.newConfig.description || '')}"
+            @value-changed="${(e: CustomEvent) =>
+              this._handleInput(e, 'description')}"
             required
           ></custom-input>
           ${this.errorMessages['description']
@@ -153,7 +162,7 @@ export class DynamicConfigForm extends LitElement {
               <select
                 class="border-2 rounded-xl w-full p-3 text-gray-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 bg-gray-100 shadow-inner"
                 @change="${(e: Event) =>
-                  this._handleInput(e as InputEvent, 'type')}"
+                  this._handleInput(e as CustomEvent, 'type')}"
               >
                 <option value="" disabled selected>Pilih tipe perangkat</option>
                 ${deviceTypes.map(
@@ -179,7 +188,7 @@ export class DynamicConfigForm extends LitElement {
               <select
                 class="border-2 rounded-xl w-full p-3 text-gray-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 bg-gray-100 shadow-inner"
                 @change="${(e: Event) =>
-                  this._handleInput(e as InputEvent, 'unit')}"
+                  this._handleInput(e as CustomEvent, 'unit')}"
               >
                 <option value="" disabled selected>Pilih unit</option>
                 ${unitOptions.map(
@@ -206,8 +215,11 @@ export class DynamicConfigForm extends LitElement {
               <custom-input
                 label="${key}"
                 type="number"
-                .value="${this.newConfig[key] || ''}"
-                .onInput="${(e: InputEvent) => this._handleInput(e, key)}"
+                .value="${this.newConfig[key] !== undefined
+                  ? this.newConfig[key]
+                  : ''}"
+                @value-changed="${(e: CustomEvent) =>
+                  this._handleInput(e, key)}"
               ></custom-input>
               ${this.errorMessages[key]
                 ? html`<p class="text-red-500 text-sm">
