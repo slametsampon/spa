@@ -1,8 +1,7 @@
 import { LitElement, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { AuthService } from '../utils/auth-service.js';
-import { StorageHelper } from '../utils/storage-helper.js';
-import userRole from '../assets/data/user-role.js';
+import { isAuthorized } from '../utils/isAuthorized.js';
 import '../components/navbar.js';
 import '../components/footer.js';
 import '../components/dynamic-config-form.js';
@@ -39,18 +38,10 @@ export class ConfigPage extends LitElement {
       return;
     }
 
-    // Ambil informasi pengguna dari localStorage
-    this.username = StorageHelper.getItem('username') || 'Guest';
-    this.role = StorageHelper.getItem('role') || 'guest';
-
-    // Periksa apakah pengguna memiliki izin "CRUD"
-    const allowedRoles = (
-      Object.keys(userRole) as Array<keyof typeof userRole>
-    ).filter((key) => userRole[key].includes('CRUD'));
-
-    if (!allowedRoles.includes(this.role as keyof typeof userRole)) {
-      alert('❌ Anda tidak memiliki izin untuk mengakses halaman konfigurasi.');
-      window.location.href = '#/';
+    // Cek apakah user memiliki salah satu izin: "CRUD" atau "Update"
+    if (!AuthService.isAuthorized(['ManageDevices'])) {
+      console.log('[Auth] Akses ditolak!');
+      return;
     }
   }
 

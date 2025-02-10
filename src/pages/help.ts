@@ -18,8 +18,6 @@ export class HelpPage extends LitElement {
     // Cek apakah user login dan memiliki akses
     if (!AuthService.isAuthenticated()) {
       window.location.href = '#/auth/login';
-    } else if (!AuthService.hasPermission('Public')) {
-      window.location.href = '#/access-denied';
     }
   }
 

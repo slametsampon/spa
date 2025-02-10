@@ -8,6 +8,14 @@ import { StorageHelper } from './storage-helper.js';
  * @description Layanan untuk autentikasi dan otorisasi pengguna.
  */
 export class AuthService {
+  /**
+   * @static
+   * @function login
+   * @description Melakukan autentikasi pengguna berdasarkan username dan password.
+   * @param {string} username - Username pengguna.
+   * @param {string} password - Password pengguna.
+   * @returns {Promise<boolean>} True jika login berhasil, False jika tidak.
+   */
   static login(username: string, password: string): Promise<boolean> {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -49,16 +57,43 @@ export class AuthService {
 
   /**
    * @static
-   * @function hasPermission
-   * @description Mengecek apakah pengguna memiliki izin berdasarkan role.
-   * @param {string} permission - Hak akses yang ingin dicek.
-   * @returns {boolean} True jika memiliki izin, False jika tidak.
+   * @function isAuthorized
+   * @description Mengecek apakah pengguna memiliki setidaknya satu dari izin yang diberikan.
+   * @param {string[]} requiredPermissions - Array izin yang diperlukan (contoh: ["CRUD", "Update"]).
+   * @returns {boolean} True jika diizinkan, False jika tidak.
    */
-  static hasPermission(permission: string): boolean {
+  static isAuthorized(requiredPermissions: string[]): boolean {
     const role = AuthService.getRole();
-    return role ? userRole[role]?.includes(permission) : false;
+
+    console.log(
+      `[Auth] Role: ${role}, Required: ${requiredPermissions.join(', ')}`
+    );
+
+    if (!role || !(role in userRole)) {
+      alert('❌ Anda tidak memiliki izin untuk mengakses halaman ini.');
+      window.location.href = '#/';
+      return false;
+    }
+
+    const userPermissions = userRole[role as keyof typeof userRole] || [];
+    const isAuthorized = requiredPermissions.some((permission) =>
+      userPermissions.includes(permission)
+    );
+
+    if (!isAuthorized) {
+      alert('❌ Anda tidak memiliki izin untuk mengakses halaman ini.');
+      window.location.href = '#/';
+      return false;
+    }
+
+    return true;
   }
 
+  /**
+   * @static
+   * @function logout
+   * @description Menghapus semua data login pengguna dari localStorage.
+   */
   static logout() {
     StorageHelper.removeItem('token');
     StorageHelper.removeItem('role');

@@ -39,8 +39,6 @@ export class AboutPage extends LitElement {
     // Cek apakah user login
     if (!AuthService.isAuthenticated()) {
       window.location.href = '/#/auth/login';
-    } else if (!AuthService.hasPermission('Update')) {
-      window.location.href = '#/access-denied';
     }
   }
 

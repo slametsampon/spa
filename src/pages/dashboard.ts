@@ -84,6 +84,12 @@ export class DashboardPage extends LitElement {
       this.username = StorageHelper.getItem('username') || 'Guest';
       this.role = StorageHelper.getItem('role') || 'guest';
     }
+
+    // Cek apakah user memiliki izin untuk mengakses Dashboard
+    if (!AuthService.isAuthorized(['ViewDevices', 'ManageDevices'])) {
+      console.log('[Auth] Akses ditolak untuk halaman Dashboard!');
+      window.location.href = '#/';
+    }
   }
 
   logout() {
