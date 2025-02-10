@@ -35,7 +35,6 @@ export class AboutPage extends LitElement {
    */
   connectedCallback() {
     super.connectedCallback();
-    console.log('<page-about> connected');
     // Cek apakah user login
     if (!AuthService.isAuthenticated()) {
       window.location.href = '/#/auth/login';

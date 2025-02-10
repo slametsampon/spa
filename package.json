@@ -16,7 +16,7 @@
     "upload:esp32": "node scripts/upload-to-esp32.js",
     "tailwind:build": "tailwindcss -i ./src/styles.css -o ./dist/styles.css --minify",
     "tailwind:watch": "tailwindcss -i ./src/styles.css -o ./dist/styles.css --watch",
-    "clean": "rm -rf dist"
+    "clean": "rimraf dist"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +30,7 @@
     "gh-pages": "^6.3.0",
     "lit": "^3.2.1",
     "live-server": "^1.2.0",
+    "rimraf": "^6.0.1",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3"
   },

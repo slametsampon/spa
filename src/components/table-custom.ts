@@ -53,7 +53,7 @@ export class TableCustom extends LitElement {
           <div class="overflow-x-auto">
             <table class="w-full border-collapse border border-gray-300">
               <thead>
-                <tr class="bg-gray-100">
+                <tr class="bg-blue-100">
                   ${headers.map(
                     (header) =>
                       html`<th
@@ -73,8 +73,12 @@ export class TableCustom extends LitElement {
               </thead>
               <tbody>
                 ${this.data.map(
-                  (row) => html`
-                    <tr class="hover:bg-gray-50">
+                  (row, index) => html`
+                    <tr
+                      class="${index % 2 === 0
+                        ? 'bg-white'
+                        : 'bg-gray-50'} hover:bg-green-100"
+                    >
                       ${headers.map(
                         (key) =>
                           html`<td class="border border-gray-300 px-4 py-2">

@@ -1,15 +1,10 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 
 @customElement('modal-dialog')
 export class ModalDialog extends LitElement {
-  static styles = css`
-    :host {
-      display: block;
-    }
-  `;
-
-  private _isOpen = false; // ✅ Variabel internal untuk kontrol modal
+  private _isOpen = false;
 
   @property({ type: Boolean })
   get isOpen() {
@@ -20,53 +15,63 @@ export class ModalDialog extends LitElement {
     console.log(`⚡ Mengubah isOpen menjadi: ${value}`);
     const oldValue = this._isOpen;
     this._isOpen = value;
-    this.requestUpdate('isOpen', oldValue); // ✅ Paksa pembaruan
+    this.requestUpdate('isOpen', oldValue);
   }
 
+  @property({ type: String }) title = 'Informasi';
+  @property({ type: String }) content = '';
+
   createRenderRoot() {
-    return this; // ✅ Gunakan Light DOM agar Tailwind bekerja
+    return this;
   }
 
   updated(changedProperties: Map<string, any>) {
-    console.log('modal-dialog:updated-run');
     if (changedProperties.has('isOpen')) {
-      console.log(`🔄 Modal State: isOpen = ${this.isOpen}`);
       this.style.display = this.isOpen ? 'flex' : 'none';
     }
   }
 
   private _closeModal() {
-    console.log('❌ Menutup modal');
     this.isOpen = false;
     this.requestUpdate();
   }
 
-  setContent(content: HTMLElement) {
-    const modalContent = this.querySelector('#modal-content');
-    if (modalContent) {
-      modalContent.innerHTML = ''; // Bersihkan konten sebelumnya
-      modalContent.appendChild(content); // Tambahkan konten baru
-    }
+  setContent(content: string) {
+    this.content = content;
+    this.requestUpdate();
   }
 
   render() {
     return html`
+      <!-- Overlay (Background Gelap) -->
       <div
         class="${this.isOpen
-          ? 'fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50'
+          ? 'fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50'
           : 'hidden'}"
+        @click=${this._closeModal}
       >
-        <div class="p-6 relative flex flex-col items-center">
-          <!-- Tombol Close -->
+        <!-- Modal Box -->
+        <div
+          class="bg-white p-8 rounded-lg shadow-2xl max-w-2xl w-full relative transform transition-all scale-100 leading-relaxed"
+          @click=${(e: Event) => e.stopPropagation()}
+        >
+          <!-- Tombol Close (Pojok Kanan Atas) -->
           <button
-            class="absolute top-2 right-2 w-8 h-8 border-none rounded-full bg-red-600 text-white cursor-pointer flex shadow-md justify-center items-center hover:bg-red-700"
+            class="absolute top-3 right-3 w-6 h-6 border-none rounded-full bg-red-600 text-white cursor-pointer flex justify-center items-center shadow-md hover:bg-red-700 transition-all"
             @click=${this._closeModal}
           >
             ✕
           </button>
 
-          <!-- Wrapper Konten -->
-          <div id="modal-content"></div>
+          <!-- Judul Modal -->
+          <h2 class="text-lg font-semibold text-gray-800 mb-4">
+            ${this.title}
+          </h2>
+
+          <!-- Konten Modal (Menggunakan unsafeHTML untuk HTML Formatting) -->
+          <div id="modal-content" class="text-gray-800 text-sm">
+            ${unsafeHTML(this.content)}
+          </div>
         </div>
       </div>
     `;
