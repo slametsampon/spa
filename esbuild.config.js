@@ -59,6 +59,7 @@ const startBuild = async () => {
     } else {
       console.log('Building for production...');
       await ctx.rebuild();
+      await ctx.dispose(); // <-- Tambahkan ini untuk menghentikan proses
     }
 
     console.log('Build completed successfully! Check dist/ folder for output.');
@@ -72,6 +73,8 @@ const startBuild = async () => {
 const main = async () => {
   await startBuild();
   copyFile('src/index.html', 'dist/index.html'); // Pindahkan proses copyFile setelah startBuild selesai
+  console.log('Exiting process...');
+  process.exit(0); // <-- Tambahkan ini agar proses benar-benar selesai
 };
 
 main();
