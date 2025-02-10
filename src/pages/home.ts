@@ -73,8 +73,9 @@ export class HomePage extends LitElement {
           </h2>
           <p class="text-gray-700 mb-4 font-roboto">
             Sebuah proyek SPA multipage dengan halaman <strong>Home</strong>,
-            <strong>About</strong>, dan <strong>Help</strong>, masing-masing
-            memiliki:
+            <strong>Dashboard</strong
+            >,<strong>Config</strong>,<strong>About</strong>, dan
+            <strong>Help</strong>, masing-masing memiliki:
           </p>
           <ul class="list-disc list-inside space-y-2 text-gray-700 font-roboto">
             <li><strong>Header:</strong> Navbar navigasi antar halaman.</li>
