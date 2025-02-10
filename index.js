@@ -7560,7 +7560,7 @@
             alt="SPA-Logo"
             class="rounded-xl h-[50px]"
           />
-          <p class="sm:hidden px-2 mt-5 text-xl font-thin">
+          <p class="sm:hidden px-2 mt-5 text-sm font-thin">
             <span class="font-bold text-orange-600 italic">S</span>ingle
             <span class="font-bold text-orange-600 italic">P</span>age
             <span class="font-bold text-orange-600 italic">A</span>pplication
