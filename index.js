@@ -7993,18 +7993,104 @@
       {
         title: "Setup Project",
         description: `
-        Sebelum memulai pengembangan, kita perlu menyiapkan proyek dengan struktur yang jelas. 
-        Langkah ini penting agar kode tetap terorganisir dan dapat dikembangkan dengan mudah. 
-        Kita akan menggunakan Node.js, npm, dan beberapa dependensi utama untuk membangun SPA ini.
+        Untuk memulai proyek SPA, langkah pertama adalah menginisialisasi proyek menggunakan Node Package Manager (NPM). 
+        Proses ini menghasilkan file <code>package.json</code> yang akan berfungsi sebagai pusat manajemen dependensi dan skrip proyek.
       `,
         content: `
-        <p>Untuk memulai proyek, lakukan langkah-langkah berikut:</p>
-        <h3 class="text-lg font-semibold mt-4">1\uFE0F\u20E3 Clone Repository</h3>
-        <pre class="bg-gray-100 p-3 rounded">git clone https://github.com/username/spa-project.git</pre>
-        <h3 class="text-lg font-semibold mt-4">2\uFE0F\u20E3 Masuk ke Folder Project</h3>
-        <pre class="bg-gray-100 p-3 rounded">cd spa-project</pre>
-        <h3 class="text-lg font-semibold mt-4">3\uFE0F\u20E3 Install Dependencies</h3>
-        <pre class="bg-gray-100 p-3 rounded">npm install</pre>
+        <p>Ikuti langkah-langkah berikut untuk mengatur proyek dari awal:</p>
+    
+        <h3 class="text-lg font-semibold mt-4">1\uFE0F\u20E3 Buat Folder Proyek</h3>
+        <pre class="bg-gray-800 text-white p-3 rounded-lg shadow-md">mkdir spa && cd spa</pre>
+        <p>Perintah ini akan membuat folder <code>spa</code> dan masuk ke dalamnya.</p>
+    
+        <h3 class="text-lg font-semibold mt-4">2\uFE0F\u20E3 Inisialisasi Proyek dengan NPM</h3>
+        <pre class="bg-gray-800 text-white p-3 rounded-lg shadow-md">npm init -y</pre>
+        <p>Perintah ini akan membuat file <code>package.json</code> di dalam folder proyek.</p>
+    
+        <h3 class="text-lg font-semibold mt-4">\u{1F539} Penjelasan</h3>
+        <ul class="list-disc pl-5 mt-4 space-y-2">
+          <li>
+            <strong>File <code>package.json</code>:</strong> Berisi metadata proyek seperti nama, versi, deskripsi, skrip build, dan daftar dependensi.
+          </li>
+          <li>
+            <strong>Manfaat:</strong> Dengan <code>package.json</code>, Anda dapat mengelola library pihak ketiga, menjalankan skrip otomatis, 
+            dan mengatur alur kerja pengembangan dengan lebih mudah.
+          </li>
+        </ul>
+    
+        <p class="mt-4">Langkah ini adalah fondasi untuk semua konfigurasi dan instalasi dependensi proyek di tahap selanjutnya.</p>
+      `
+      },
+      {
+        title: "Instalasi Dependensi",
+        description: `
+        Pada tahap ini, kita akan memasang semua dependensi yang diperlukan untuk mengembangkan aplikasi SPA 
+        berbasis LitElement, Tailwind CSS, dan TypeScript. Instalasi ini mencakup pengaturan toolchain, konfigurasi file, 
+        dan penambahan skrip build agar proyek dapat dibuild dengan lancar.
+      `,
+        content: `
+        <p>Ikuti langkah-langkah berikut untuk memasang semua dependensi yang dibutuhkan:</p>
+    
+        <h3 class="text-lg font-semibold mt-4">1\uFE0F\u20E3 Install Dependensi Dasar</h3>
+        <pre class="bg-gray-800 text-white p-3 rounded-lg shadow-md">
+    npm install --save-dev lit tailwindcss esbuild typescript
+        </pre>
+        
+        <h3 class="text-lg font-semibold mt-4">\u{1F539} Penjelasan</h3>
+        <ul class="list-disc pl-5 mt-4 space-y-2">
+          <li><strong>lit:</strong> Library untuk membangun komponen web berbasis LitElement.</li>
+          <li><strong>tailwindcss:</strong> Framework utility-first untuk styling.</li>
+          <li><strong>esbuild:</strong> Alat build yang cepat untuk menggabungkan, meminifikasi, dan membundle file proyek.</li>
+          <li><strong>typescript:</strong> Superset JavaScript yang menambahkan dukungan untuk tipe statis, meningkatkan keandalan dan maintainability kode.</li>
+        </ul>
+    
+        <h3 class="text-lg font-semibold mt-4">2\uFE0F\u20E3 Inisialisasi Tailwind CSS</h3>
+        <pre class="bg-gray-800 text-white p-3 rounded-lg shadow-md">npx tailwindcss init</pre>
+        <p>Perintah ini akan menghasilkan file <code>tailwind.config.js</code> dengan konfigurasi default.</p>
+    
+        <h3 class="text-lg font-semibold mt-4">3\uFE0F\u20E3 Konfigurasi File Tailwind CSS</h3>
+        <p>Tailwind CSS adalah framework utility-first yang dirancang untuk mempercepat proses styling dalam pengembangan web.</p>
+    
+        <h3 class="text-lg font-semibold mt-4">\u{1F539} Membuat File <code>styles.css</code></h3>
+        <p>Buat file <code>src/styles.css</code> dan tambahkan konfigurasi berikut:</p>
+        <pre class="bg-gray-800 text-white p-3 rounded-lg shadow-md">
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+        </pre>
+    
+        <h3 class="text-lg font-semibold mt-4">\u{1F539} Konfigurasi File <code>tailwind.config.js</code></h3>
+        <pre class="bg-gray-800 text-white p-3 rounded-lg shadow-md">
+    module.exports = {
+      content: ['./src/**/*.html', './src/**/*.ts'],
+      theme: {
+        extend: {}, // Memperluas tema default
+      },
+      plugins: [], // Menambahkan plugin Tailwind (opsional)
+    };
+        </pre>
+        <p>File ini memastikan Tailwind hanya memproses kelas yang digunakan dalam proyek untuk mengurangi ukuran file CSS final.</p>
+      `
+      },
+      {
+        title: "Setup GitHub",
+        description: `
+        Penggunaan GitHub dalam proyek ini bertujuan untuk mempermudah pengelolaan versi kode, 
+        kolaborasi tim, dan deployment ke GitHub Pages. 
+        Kita akan menginisialisasi repository, menghubungkannya ke GitHub, dan melakukan push pertama.
+      `,
+        content: `
+        <p>Untuk menyimpan proyek ini di GitHub, ikuti langkah-langkah berikut:</p>
+        <h3 class="text-lg font-semibold mt-4">1\uFE0F\u20E3 Inisialisasi Git</h3>
+        <pre class="bg-gray-100 p-3 rounded">git init</pre>
+        <h3 class="text-lg font-semibold mt-4">2\uFE0F\u20E3 Tambahkan Remote Repository</h3>
+        <pre class="bg-gray-100 p-3 rounded">git remote add origin https://github.com/username/spa-project.git</pre>
+        <h3 class="text-lg font-semibold mt-4">3\uFE0F\u20E3 Commit dan Push</h3>
+        <pre class="bg-gray-100 p-3 rounded">
+git add .
+git commit -m "Inisialisasi proyek"
+git push -u origin main
+        </pre>
       `
       },
       {
@@ -8109,27 +8195,6 @@
             <td class="border border-gray-300 px-4 py-2">Build dan Minify untuk deploy</td>
           </tr>
         </table>
-      `
-      },
-      {
-        title: "Setup GitHub",
-        description: `
-        Penggunaan GitHub dalam proyek ini bertujuan untuk mempermudah pengelolaan versi kode, 
-        kolaborasi tim, dan deployment ke GitHub Pages. 
-        Kita akan menginisialisasi repository, menghubungkannya ke GitHub, dan melakukan push pertama.
-      `,
-        content: `
-        <p>Untuk menyimpan proyek ini di GitHub, ikuti langkah-langkah berikut:</p>
-        <h3 class="text-lg font-semibold mt-4">1\uFE0F\u20E3 Inisialisasi Git</h3>
-        <pre class="bg-gray-100 p-3 rounded">git init</pre>
-        <h3 class="text-lg font-semibold mt-4">2\uFE0F\u20E3 Tambahkan Remote Repository</h3>
-        <pre class="bg-gray-100 p-3 rounded">git remote add origin https://github.com/username/spa-project.git</pre>
-        <h3 class="text-lg font-semibold mt-4">3\uFE0F\u20E3 Commit dan Push</h3>
-        <pre class="bg-gray-100 p-3 rounded">
-git add .
-git commit -m "Inisialisasi proyek"
-git push -u origin main
-        </pre>
       `
       },
       {
