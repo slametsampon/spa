@@ -54,8 +54,6 @@ export class ModalDialog extends LitElement {
         return 'bg-gradient-to-r from-yellow-400 to-orange-600';
       case 'Deployment ke GitHub Pages':
         return 'bg-gradient-to-r from-pink-400 to-red-600';
-      case 'Deployment ke ESP32-C3':
-        return 'bg-gradient-to-r from-gray-400 to-gray-700';
       default:
         return 'bg-gradient-to-r from-blue-200 to-green-300';
     }
