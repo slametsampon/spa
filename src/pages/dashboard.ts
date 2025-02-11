@@ -1,4 +1,4 @@
-import { LitElement, html } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { AuthService } from '../utils/auth-service.js';
 import { StorageHelper } from '../utils/storage-helper.js';
@@ -101,7 +101,8 @@ export class DashboardPage extends LitElement {
     return html`
       <app-navbar></app-navbar>
       <main
-        class="p-8 my-14 bg-gradient-to-tr from-gray-200 to-gray-300 min-h-screen"
+        class="p-8 my-14 min-h-screen"
+        style="background-image: url('./assets/blob-scene-haikei.svg');"
       >
         <h1 class="text-3xl font-extrabold text-blue-900">Dashboard</h1>
         <p class="text-lg text-gray-700">
