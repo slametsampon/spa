@@ -820,6 +820,10 @@ video {
   max-width: 24rem;
 }
 
+.max-w-md {
+  max-width: 28rem;
+}
+
 .flex-grow {
   flex-grow: 1;
 }
@@ -864,6 +868,10 @@ video {
 
 .flex-col {
   flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
 }
 
 .items-center {
@@ -1635,6 +1643,10 @@ video {
 }
 
 @media (min-width: 768px) {
+  .md\:grid {
+    display: grid;
+  }
+
   .md\:max-w-md {
     max-width: 28rem;
   }
