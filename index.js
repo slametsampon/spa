@@ -7838,6 +7838,13 @@
       const oldValue = this._isOpen;
       this._isOpen = value;
       this.requestUpdate("isOpen", oldValue);
+      if (this._isOpen) {
+        document.body.style.overflow = "hidden";
+        document.body.style.height = "100vh";
+      } else {
+        document.body.style.overflow = "auto";
+        document.body.style.height = "auto";
+      }
     }
     title = "Informasi";
     content = "";
@@ -7846,11 +7853,15 @@
     }
     updated(changedProperties) {
       if (changedProperties.has("isOpen")) {
+        console.log(`\u{1F504} Modal State: isOpen = ${this.isOpen}`);
         this.style.display = this.isOpen ? "flex" : "none";
       }
     }
     _closeModal() {
+      console.log("\u274C Menutup modal");
       this.isOpen = false;
+      document.body.style.overflow = "auto";
+      document.body.style.height = "auto";
       this.requestUpdate();
     }
     setContent(title, content) {
@@ -7878,12 +7889,13 @@
       return x`
       <!-- Overlay (Background Gelap) -->
       <div
-        class="${this.isOpen ? "fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50" : "hidden"}"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50
+          transition-opacity duration-300 ${this.isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}"
         @click=${this._closeModal}
       >
-        <!-- Modal Box dengan Gradient Dinamis -->
+        <!-- Modal Box dengan Scroll Sendiri -->
         <div
-          class="p-8 rounded-lg shadow-2xl max-w-2xl w-full relative transform transition-all scale-100 ${this._getGradientClass(
+          class="p-6 rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative transform transition-all scale-100 ${this._getGradientClass(
         this.title
       )}"
           @click=${(e7) => e7.stopPropagation()}
@@ -7989,6 +8001,110 @@
         <pre class="bg-gray-100 p-3 rounded">cd spa-project</pre>
         <h3 class="text-lg font-semibold mt-4">3\uFE0F\u20E3 Install Dependencies</h3>
         <pre class="bg-gray-100 p-3 rounded">npm install</pre>
+      `
+      },
+      {
+        title: "Setup esbuild",
+        description: `
+        Untuk menggunakan esbuild, kita perlu menginstalnya dan mengatur konfigurasi awal 
+        di dalam file \`esbuild.config.js\`. Tahap ini mencakup instalasi, konfigurasi 
+        build, dan loader untuk berbagai file.
+      `,
+        content: `
+        <p><strong>Apa itu esbuild?</strong></p>
+        <p>esbuild adalah tool yang digunakan untuk mengompilasi dan menggabungkan file JavaScript/TypeScript 
+        dengan sangat cepat. Dalam proyek ini, kita menggunakan esbuild untuk:</p>
+  
+        <ul class="list-disc pl-5 mt-4 space-y-2">
+          <li>Menggabungkan semua file TypeScript menjadi satu bundle.</li>
+          <li>Meminifikasi kode untuk produksi.</li>
+          <li>Membuat source map untuk debugging.</li>
+        </ul>
+  
+        <h3 class="text-lg font-semibold mt-4">\u{1F539} Instalasi esbuild</h3>
+        <p>Pastikan Node.js sudah terinstal, lalu jalankan perintah berikut:</p>
+        <pre class="bg-gray-800 text-white p-3 rounded-lg shadow-md">npm install --save-dev esbuild</pre>
+  
+        <h3 class="text-lg font-semibold mt-4">\u{1F539} Konfigurasi \`esbuild.config.js\`</h3>
+        <p>File ini mengatur bagaimana esbuild memproses file TypeScript dan aset lainnya.</p>
+  
+        <pre class="bg-gray-800 text-white p-3 rounded-lg shadow-md">
+  const buildOptions = {
+    entryPoints: ['src/index.ts'], // File utama yang akan dibundel
+    outdir: 'dist', // Folder output setelah build
+    bundle: true, // Menggabungkan semua file menjadi satu
+    minify: isProduction, // Minifikasi hanya untuk mode produksi
+    sourcemap: isDev || isPreRelease, // Source map untuk debugging
+    publicPath: publicPath, // Path untuk akses file publik
+    target: 'es2022', // Target versi JavaScript
+    tsconfig: 'tsconfig.json', // Menggunakan konfigurasi TypeScript
+    loader: {
+      '.ts': 'ts', // Loader untuk TypeScript
+      '.png': 'file', // Loader untuk gambar PNG
+      '.jpg': 'file', // Loader untuk gambar JPG
+      '.svg': 'file', // Loader untuk SVG
+      '.webp': 'file', // Loader WebP
+      '.ico': 'file', // Loader untuk favicon
+    },
+    logLevel: 'info', // Menampilkan informasi saat proses build
+  };
+        </pre>
+  
+        <p>Setelah konfigurasi selesai, kita bisa mulai menggunakan esbuild untuk membangun aplikasi.</p>
+      `
+      },
+      {
+        title: "Penggunaan esbuild",
+        description: `
+        Setelah esbuild dikonfigurasi, kita bisa menggunakannya untuk membangun aplikasi.
+        Proses ini mencakup menjalankan build dalam mode development, produksi, dan otomatisasi.
+      `,
+        content: `
+        <h3 class="text-lg font-semibold mt-4">\u{1F539} Menjalankan esbuild</h3>
+        <p>Untuk menjalankan esbuild secara manual, gunakan perintah berikut:</p>
+        <pre class="bg-gray-800 text-white p-3 rounded-lg shadow-md">node esbuild.config.js</pre>
+  
+        <p>Atau gunakan perintah dari \`package.json\`:</p>
+        <pre class="bg-gray-800 text-white p-3 rounded-lg shadow-md">npm run esbuild:watch</pre>
+  
+        <p>Perintah ini akan menjalankan esbuild dalam mode watch sehingga perubahan file akan 
+        otomatis di-build ulang tanpa harus menjalankan perintah secara manual.</p>
+  
+        <h3 class="text-lg font-semibold mt-4">\u{1F539} Build untuk Produksi</h3>
+        <p>Jika ingin membangun aplikasi untuk produksi:</p>
+        <pre class="bg-gray-800 text-white p-3 rounded-lg shadow-md">npm run build:production</pre>
+  
+        <p>Setelah proses selesai, file hasil build akan tersimpan di folder <code>dist/</code>.</p>
+  
+        <h3 class="text-lg font-semibold mt-4">\u{1F539} Fungsi Pendukung</h3>
+        <p>Beberapa fungsi tambahan untuk memastikan build berjalan dengan baik:</p>
+  
+        <ul class="list-disc pl-5 mt-4 space-y-2">
+          <li><strong>ensureDirExists()</strong>: Membuat folder \`dist/\` jika belum ada.</li>
+          <li><strong>copyFile()</strong>: Menyalin file (misalnya \`index.html\`) ke \`dist/\`.</li>
+          <li><strong>copyFolderRecursive()</strong>: Menyalin seluruh folder \`assets/\` ke \`dist/\`.</li>
+        </ul>
+  
+        <h3 class="text-lg font-semibold mt-4">\u{1F539} Mode Development vs. Production</h3>
+        <p>Kita bisa memilih mode sesuai kebutuhan:</p>
+  
+        <table class="border-collapse border border-gray-300 mt-4 text-sm">
+          <tr class="bg-gray-700 text-white">
+            <th class="border border-gray-300 px-4 py-2">Mode</th>
+            <th class="border border-gray-300 px-4 py-2">Perintah</th>
+            <th class="border border-gray-300 px-4 py-2">Keterangan</th>
+          </tr>
+          <tr>
+            <td class="border border-gray-300 px-4 py-2">Development</td>
+            <td class="border border-gray-300 px-4 py-2">npm run dev</td>
+            <td class="border border-gray-300 px-4 py-2">Build + Live Server</td>
+          </tr>
+          <tr class="bg-gray-100">
+            <td class="border border-gray-300 px-4 py-2">Production</td>
+            <td class="border border-gray-300 px-4 py-2">npm run build:production</td>
+            <td class="border border-gray-300 px-4 py-2">Build dan Minify untuk deploy</td>
+          </tr>
+        </table>
       `
       },
       {
