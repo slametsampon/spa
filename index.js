@@ -7883,9 +7883,9 @@
         class="${this.isOpen ? "fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50" : "hidden"}"
         @click=${this._closeModal}
       >
-        <!-- Modal Box dengan Responsivitas -->
+        <!-- Modal Box dengan Gradient Dinamis -->
         <div
-          class="p-6 rounded-lg shadow-2xl w-full max-w-2xl sm:max-w-sm md:max-w-md lg:max-w-lg h-auto max-h-[90vh] overflow-auto relative transform transition-all scale-100 ${this._getGradientClass(
+          class="p-8 rounded-lg shadow-2xl max-w-2xl w-full relative transform transition-all scale-100 ${this._getGradientClass(
         this.title
       )}"
           @click=${(e7) => e7.stopPropagation()}
