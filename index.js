@@ -7853,9 +7853,28 @@
       this.isOpen = false;
       this.requestUpdate();
     }
-    setContent(content) {
+    setContent(title, content) {
+      this.title = title;
       this.content = content;
       this.requestUpdate();
+    }
+    _getGradientClass(title) {
+      switch (title) {
+        case "Setup Project":
+          return "bg-gradient-to-r from-purple-400 to-indigo-600";
+        case "Setup GitHub":
+          return "bg-gradient-to-r from-blue-400 to-blue-700";
+        case "Deployment ke ESP32-C3":
+          return "bg-gradient-to-r from-green-400 to-teal-600";
+        case "Tahap Development":
+          return "bg-gradient-to-r from-yellow-400 to-orange-600";
+        case "Deployment ke GitHub Pages":
+          return "bg-gradient-to-r from-pink-400 to-red-600";
+        case "Deployment ke ESP32-C3":
+          return "bg-gradient-to-r from-gray-400 to-gray-700";
+        default:
+          return "bg-gradient-to-r from-blue-200 to-green-300";
+      }
     }
     render() {
       return x`
@@ -7864,26 +7883,26 @@
         class="${this.isOpen ? "fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50" : "hidden"}"
         @click=${this._closeModal}
       >
-        <!-- Modal Box -->
+        <!-- Modal Box dengan Gradient Dinamis -->
         <div
-          class="bg-white p-8 rounded-lg shadow-2xl max-w-2xl w-full relative transform transition-all scale-100 leading-relaxed"
+          class="p-8 rounded-lg shadow-2xl max-w-2xl w-full relative transform transition-all scale-100 ${this._getGradientClass(
+        this.title
+      )}"
           @click=${(e7) => e7.stopPropagation()}
         >
-          <!-- Tombol Close (Pojok Kanan Atas) -->
+          <!-- Tombol Close -->
           <button
-            class="absolute top-3 right-3 w-6 h-6 border-none rounded-full bg-red-600 text-white cursor-pointer flex justify-center items-center shadow-md hover:bg-red-700 transition-all"
+            class="absolute top-3 right-3 w-8 h-8 border-none rounded-full bg-red-600 text-white cursor-pointer flex justify-center items-center shadow-md hover:bg-red-700 transition-all"
             @click=${this._closeModal}
           >
             ✕
           </button>
 
           <!-- Judul Modal -->
-          <h2 class="text-lg font-semibold text-gray-800 mb-4">
-            ${this.title}
-          </h2>
+          <h2 class="text-xl font-bold text-white shadow-lg">${this.title}</h2>
 
-          <!-- Konten Modal (Menggunakan unsafeHTML untuk HTML Formatting) -->
-          <div id="modal-content" class="text-gray-800 text-sm">
+          <!-- Konten Modal (Menggunakan unsafeHTML) -->
+          <div id="modal-content" class="text-gray-900 text-sm mt-4">
             ${o5(this.content)}
           </div>
         </div>
@@ -7958,39 +7977,88 @@
     }
     helpTopics = [
       {
-        title: "Cara Menggunakan Aplikasi",
-        description: "Panduan langkah demi langkah untuk menggunakan aplikasi ini.",
+        title: "Setup Project",
+        description: `
+        Sebelum memulai pengembangan, kita perlu menyiapkan proyek dengan struktur yang jelas. 
+        Langkah ini penting agar kode tetap terorganisir dan dapat dikembangkan dengan mudah. 
+        Kita akan menggunakan Node.js, npm, dan beberapa dependensi utama untuk membangun SPA ini.
+      `,
         content: `
-      <p>Aplikasi ini dirancang untuk mempermudah pengguna dalam mengelola perangkat IoT.</p>
-      <p>Berikut adalah langkah-langkah penggunaan aplikasi:</p>
-
-      <ol class="list-decimal pl-5 mt-4 space-y-2">
-        <li><strong>Login</strong> dengan akun Anda.</li>
-        <li><strong>Tambahkan perangkat baru</strong> melalui menu "Perangkat".</li>
-        <li><strong>Pantau data sensor</strong> yang dikirim oleh perangkat.</li>
-        <li><strong>Konfigurasikan notifikasi & alarm</strong> jika dibutuhkan.</li>
-        <li><strong>Perbarui firmware perangkat</strong> secara berkala untuk mendapatkan fitur terbaru.</li>
-      </ol>
-
-      <p class="mt-4">Jika mengalami kendala, silakan hubungi tim dukungan teknis kami.</p>
-    `
+        <p>Untuk memulai proyek, lakukan langkah-langkah berikut:</p>
+        <h3 class="text-lg font-semibold mt-4">1\uFE0F\u20E3 Clone Repository</h3>
+        <pre class="bg-gray-100 p-3 rounded">git clone https://github.com/username/spa-project.git</pre>
+        <h3 class="text-lg font-semibold mt-4">2\uFE0F\u20E3 Masuk ke Folder Project</h3>
+        <pre class="bg-gray-100 p-3 rounded">cd spa-project</pre>
+        <h3 class="text-lg font-semibold mt-4">3\uFE0F\u20E3 Install Dependencies</h3>
+        <pre class="bg-gray-100 p-3 rounded">npm install</pre>
+      `
       },
       {
-        title: "Pengaturan Perangkat",
-        description: "Cara menambahkan dan mengonfigurasi perangkat Anda.",
+        title: "Setup GitHub",
+        description: `
+        Penggunaan GitHub dalam proyek ini bertujuan untuk mempermudah pengelolaan versi kode, 
+        kolaborasi tim, dan deployment ke GitHub Pages. 
+        Kita akan menginisialisasi repository, menghubungkannya ke GitHub, dan melakukan push pertama.
+      `,
         content: `
-      <p>Untuk menghubungkan perangkat baru, ikuti langkah-langkah berikut:</p>
-
-      <ul class="list-disc pl-5 mt-4 space-y-2">
-        <li><strong>Pastikan perangkat menyala</strong> dan dalam mode pairing.</li>
-        <li><strong>Buka aplikasi</strong> dan masuk ke bagian "Pengaturan > Perangkat".</li>
-        <li><strong>Klik "Tambah Perangkat"</strong>, lalu ikuti petunjuk yang muncul.</li>
-        <li><strong>Masukkan informasi perangkat</strong>, seperti nama dan tipe sensor.</li>
-        <li><strong>Simpan konfigurasi</strong> dan cek apakah perangkat muncul di dashboard.</li>
-      </ul>
-
-      <p class="mt-4">Jika koneksi gagal, pastikan perangkat berada dalam jangkauan WiFi.</p>
-    `
+        <p>Untuk menyimpan proyek ini di GitHub, ikuti langkah-langkah berikut:</p>
+        <h3 class="text-lg font-semibold mt-4">1\uFE0F\u20E3 Inisialisasi Git</h3>
+        <pre class="bg-gray-100 p-3 rounded">git init</pre>
+        <h3 class="text-lg font-semibold mt-4">2\uFE0F\u20E3 Tambahkan Remote Repository</h3>
+        <pre class="bg-gray-100 p-3 rounded">git remote add origin https://github.com/username/spa-project.git</pre>
+        <h3 class="text-lg font-semibold mt-4">3\uFE0F\u20E3 Commit dan Push</h3>
+        <pre class="bg-gray-100 p-3 rounded">
+git add .
+git commit -m "Inisialisasi proyek"
+git push -u origin main
+        </pre>
+      `
+      },
+      {
+        title: "Tahap Development",
+        description: `
+        Tahap pengembangan dilakukan untuk memastikan aplikasi berjalan dengan baik sebelum deployment. 
+        Kita akan menggunakan esbuild sebagai bundler dan live-server untuk melihat perubahan secara langsung.
+      `,
+        content: `
+        <p>Dalam tahap development, kita perlu menjalankan aplikasi di lingkungan lokal sebelum siap dipublikasikan.</p>
+        <h3 class="text-lg font-semibold mt-4">1\uFE0F\u20E3 Jalankan Mode Development</h3>
+        <pre class="bg-gray-100 p-3 rounded">npm run dev</pre>
+        <h3 class="text-lg font-semibold mt-4">2\uFE0F\u20E3 Menjalankan Tailwind & Build Bersamaan</h3>
+        <pre class="bg-gray-100 p-3 rounded">npm run dev:full</pre>
+      `
+      },
+      {
+        title: "Deployment ke GitHub Pages",
+        description: `
+        GitHub Pages memungkinkan kita untuk menghosting SPA secara gratis. 
+        Dengan memanfaatkan gh-pages, kita dapat membangun aplikasi dalam mode pre-release 
+        dan mengunggahnya ke GitHub untuk diakses oleh publik.
+      `,
+        content: `
+        <p>Untuk mempublikasikan aplikasi ke GitHub Pages:</p>
+        <h3 class="text-lg font-semibold mt-4">1\uFE0F\u20E3 Build dalam Mode Pre-Release</h3>
+        <pre class="bg-gray-100 p-3 rounded">npm run pre-release</pre>
+        <h3 class="text-lg font-semibold mt-4">2\uFE0F\u20E3 Deploy ke GitHub Pages</h3>
+        <pre class="bg-gray-100 p-3 rounded">npm run deploy:github</pre>
+      `
+      },
+      {
+        title: "Deployment ke ESP32-C3",
+        description: `
+        ESP32-C3 digunakan untuk menyimpan SPA agar bisa diakses tanpa koneksi internet. 
+        Dengan memanfaatkan fitur penyimpanan file, kita bisa meng-hosting aplikasi ini langsung dari perangkat IoT. 
+        Kita akan menginstal dependensi, membangun aplikasi, dan mengunggahnya ke ESP32-C3.
+      `,
+        content: `
+        <p>Untuk menyiapkan ESP32-C3 agar bisa digunakan untuk hosting SPA:</p>
+        <h3 class="text-lg font-semibold mt-4">1\uFE0F\u20E3 Install Dependencies</h3>
+        <pre class="bg-gray-100 p-3 rounded">npm install</pre>
+        <h3 class="text-lg font-semibold mt-4">2\uFE0F\u20E3 Build untuk ESP32</h3>
+        <pre class="bg-gray-100 p-3 rounded">npm run build:production</pre>
+        <h3 class="text-lg font-semibold mt-4">3\uFE0F\u20E3 Upload ke ESP32</h3>
+        <pre class="bg-gray-100 p-3 rounded">npm run upload:esp32</pre>
+      `
       }
     ];
     connectedCallback() {
@@ -7999,16 +8067,13 @@
         window.location.href = "#/auth/login";
       }
     }
-    _showModal(content) {
-      console.log("\u{1F7E2} Membuka modal dengan konten:", content);
+    _showModal(title, content) {
       const modalDialog = this.renderRoot?.querySelector(
         "modal-dialog"
       );
       if (modalDialog) {
         modalDialog.isOpen = true;
-        const contentElement = document.createElement("div");
-        contentElement.innerHTML = `<p class="text-gray-700 text-lg">${content}</p>`;
-        modalDialog.setContent(contentElement);
+        modalDialog.setContent(title, content);
       }
     }
     render() {
@@ -8017,12 +8082,12 @@
       <main
         class="p-8 my-14 bg-gradient-to-tr from-blue-50 to-green-300 min-h-screen"
       >
-        <h1 class="text-3xl font-extrabold text-blue-700">Help & Support</h1>
+        <h1 class="text-3xl font-extrabold text-blue-700">Alur Kerja SPA</h1>
         <p class="text-gray-700 text-lg">
-          Butuh bantuan? Berikut adalah sumber daya yang dapat membantu Anda:
+          Berikut adalah tahapan utama dalam membangun SPA ini:
         </p>
 
-        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
           ${this.helpTopics.map(
         (topic) => x`
               <card-component
@@ -8031,13 +8096,12 @@
           title: topic.title,
           description: topic.description
         }}
-                @click=${() => this._showModal(topic.content)}
+                @click=${() => this._showModal(topic.title, topic.content)}
               ></card-component>
             `
       )}
         </div>
 
-        <!-- Komponen modal -->
         <modal-dialog></modal-dialog>
       </main>
       <app-footer></app-footer>
