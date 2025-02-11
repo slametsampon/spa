@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 
 @customElement('card-component')
 export class CardComponent extends LitElement {
@@ -20,15 +21,19 @@ export class CardComponent extends LitElement {
 
     return html`
       <div
-        class="max-w-sm p-5 bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-transform transform hover:scale-105 cursor-pointer"
+        class="max-w-sm p-5 bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg 
+        transition-transform transform hover:scale-105 cursor-pointer h-full flex flex-col"
       >
         <h2 class="text-lg font-bold text-gray-800">${title}</h2>
-        <p class="text-gray-600 text-sm mb-3">${description}</p>
+        <p class="text-gray-600 text-sm mb-3 flex-grow">
+          ${unsafeHTML(description)}
+        </p>
+        <!-- ✅ Gunakan unsafeHTML dan flex-grow agar isi card proporsional -->
 
         <!-- Tampilkan daftar hanya jika ada data tambahan -->
         ${filteredEntries.length > 0
           ? html`
-              <ul class="text-gray-700 text-sm space-y-1">
+              <ul class="text-gray-700 text-sm space-y-1 mt-auto">
                 ${filteredEntries.map(
                   ([key, value]) => html`
                     <li class="flex justify-between">

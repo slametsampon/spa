@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 
@@ -16,6 +16,15 @@ export class ModalDialog extends LitElement {
     const oldValue = this._isOpen;
     this._isOpen = value;
     this.requestUpdate('isOpen', oldValue);
+
+    // 🔹 Kunci scrolling halaman utama saat modal terbuka
+    if (this._isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.height = '100vh';
+    } else {
+      document.body.style.overflow = 'auto';
+      document.body.style.height = 'auto';
+    }
   }
 
   @property({ type: String }) title = 'Informasi';
@@ -27,12 +36,16 @@ export class ModalDialog extends LitElement {
 
   updated(changedProperties: Map<string, any>) {
     if (changedProperties.has('isOpen')) {
+      console.log(`🔄 Modal State: isOpen = ${this.isOpen}`);
       this.style.display = this.isOpen ? 'flex' : 'none';
     }
   }
 
   private _closeModal() {
+    console.log('❌ Menutup modal');
     this.isOpen = false;
+    document.body.style.overflow = 'auto'; // 🔹 Pulihkan scrolling halaman utama
+    document.body.style.height = 'auto';
     this.requestUpdate();
   }
 
@@ -63,14 +76,15 @@ export class ModalDialog extends LitElement {
     return html`
       <!-- Overlay (Background Gelap) -->
       <div
-        class="${this.isOpen
-          ? 'fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50'
-          : 'hidden'}"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50
+          transition-opacity duration-300 ${this.isOpen
+          ? 'opacity-100'
+          : 'opacity-0 pointer-events-none'}"
         @click=${this._closeModal}
       >
-        <!-- Modal Box dengan Gradient Dinamis -->
+        <!-- Modal Box dengan Scroll Sendiri -->
         <div
-          class="p-8 rounded-lg shadow-2xl max-w-2xl w-full relative transform transition-all scale-100 ${this._getGradientClass(
+          class="p-6 rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative transform transition-all scale-100 ${this._getGradientClass(
             this.title
           )}"
           @click=${(e: Event) => e.stopPropagation()}
