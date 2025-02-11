@@ -10,7 +10,7 @@
     "esbuild:watch": "cross-env NODE_ENV=development node esbuild.config.js",
     "start:local": "live-server dist --watch",
     "pre-release": "cross-env NODE_ENV=pre-release node esbuild.config.js",
-    "deploy:github": "npm run pre-release && gh-pages -d dist",
+    "deploy:github": "npm run pre-release && node scripts/createNoJekyll.js && gh-pages -d dist",
     "build:production": "cross-env NODE_ENV=production node esbuild.config.js",
     "deploy:esp32": "npm run build:production && npm run upload:esp32",
     "upload:esp32": "node scripts/upload-to-esp32.js",
