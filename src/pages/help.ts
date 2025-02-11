@@ -343,11 +343,13 @@ git push -u origin main
           Berikut adalah tahapan utama dalam membangun SPA ini:
         </p>
 
-        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          class="mt-6 flex flex-wrap justify-center gap-6 md:grid md:grid-cols-2 lg:grid-cols-3"
+        >
           ${this.helpTopics.map(
             (topic) => html`
               <card-component
-                class="cursor-pointer hover:shadow-xl transition-transform transform hover:scale-105"
+                class="cursor-pointer hover:shadow-xl transition-transform transform hover:scale-105 w-full max-w-md mx-auto"
                 .data=${{
                   title: topic.title,
                   description: topic.description,
