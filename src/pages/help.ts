@@ -53,23 +53,6 @@ git push -u origin main
       `,
     },
     {
-      title: 'Setup ESP32-C3',
-      description: `
-        ESP32-C3 digunakan untuk menyimpan SPA agar bisa diakses tanpa koneksi internet. 
-        Dengan memanfaatkan fitur penyimpanan file, kita bisa meng-hosting aplikasi ini langsung dari perangkat IoT. 
-        Kita akan menginstal dependensi, membangun aplikasi, dan mengunggahnya ke ESP32-C3.
-      `,
-      content: `
-        <p>Untuk menyiapkan ESP32-C3 agar bisa digunakan untuk hosting SPA:</p>
-        <h3 class="text-lg font-semibold mt-4">1️⃣ Install Dependencies</h3>
-        <pre class="bg-gray-100 p-3 rounded">npm install</pre>
-        <h3 class="text-lg font-semibold mt-4">2️⃣ Build untuk ESP32</h3>
-        <pre class="bg-gray-100 p-3 rounded">npm run build:production</pre>
-        <h3 class="text-lg font-semibold mt-4">3️⃣ Upload ke ESP32</h3>
-        <pre class="bg-gray-100 p-3 rounded">npm run upload:esp32</pre>
-      `,
-    },
-    {
       title: 'Tahap Development',
       description: `
         Tahap pengembangan dilakukan untuk memastikan aplikasi berjalan dengan baik sebelum deployment. 
@@ -96,6 +79,23 @@ git push -u origin main
         <pre class="bg-gray-100 p-3 rounded">npm run pre-release</pre>
         <h3 class="text-lg font-semibold mt-4">2️⃣ Deploy ke GitHub Pages</h3>
         <pre class="bg-gray-100 p-3 rounded">npm run deploy:github</pre>
+      `,
+    },
+    {
+      title: 'Deployment ke ESP32-C3',
+      description: `
+        ESP32-C3 digunakan untuk menyimpan SPA agar bisa diakses tanpa koneksi internet. 
+        Dengan memanfaatkan fitur penyimpanan file, kita bisa meng-hosting aplikasi ini langsung dari perangkat IoT. 
+        Kita akan menginstal dependensi, membangun aplikasi, dan mengunggahnya ke ESP32-C3.
+      `,
+      content: `
+        <p>Untuk menyiapkan ESP32-C3 agar bisa digunakan untuk hosting SPA:</p>
+        <h3 class="text-lg font-semibold mt-4">1️⃣ Install Dependencies</h3>
+        <pre class="bg-gray-100 p-3 rounded">npm install</pre>
+        <h3 class="text-lg font-semibold mt-4">2️⃣ Build untuk ESP32</h3>
+        <pre class="bg-gray-100 p-3 rounded">npm run build:production</pre>
+        <h3 class="text-lg font-semibold mt-4">3️⃣ Upload ke ESP32</h3>
+        <pre class="bg-gray-100 p-3 rounded">npm run upload:esp32</pre>
       `,
     },
   ];
