@@ -1,0 +1,5 @@
+{
+  "board": "arduino:avr:uno",
+  "output": "Arduino\\test\\build",
+  "sketch": "Arduino\\test\\test.ino"
+}

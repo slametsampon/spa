@@ -1,3 +1,6 @@
 node_modules/
 dist/
 .env
+# Abaikan folder build di dalam semua subfolder Arduino/
+Arduino/*/build/
+.vscode/c_cpp_properties.json
