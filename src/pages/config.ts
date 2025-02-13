@@ -1,7 +1,6 @@
 import { LitElement, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { AuthService } from '../utils/auth-service.js';
-import { isAuthorized } from '../utils/isAuthorized.js';
 import '../components/navbar.js';
 import '../components/footer.js';
 import '../components/dynamic-config-form.js';
