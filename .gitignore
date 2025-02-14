@@ -1,6 +1,8 @@
 node_modules/
 dist/
 .env
+.vscode/c_cpp_properties.json
+# Abaikan folder arduino-examples
+arduino-examples/
 # Abaikan folder build di dalam semua subfolder Arduino/
 Arduino/*/build/
-.vscode/c_cpp_properties.json
