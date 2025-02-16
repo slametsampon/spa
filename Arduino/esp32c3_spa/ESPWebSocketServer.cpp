@@ -65,12 +65,12 @@ void ESPWebSocketServer::serveSPA() {
     });
 
     // Menyajikan semua file di dalam folder "assets/"
-    server.on("/assets/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/assets/", HTTP_GET, [this](AsyncWebServerRequest *request) {
         String path = request->url(); // Mendapatkan path dari request
         Serial.println("[LittleFS] Memuat file: " + path);
 
         if (LittleFS.exists(path)) {
-            request->send(LittleFS, path, getContentType(path));
+            request->send(LittleFS, path, this->getContentType(path));
         } else {
             request->send(404, "text/plain", "File tidak ditemukan!");
         }

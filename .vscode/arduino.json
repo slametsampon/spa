@@ -1,6 +1,6 @@
 {
   "board": "esp32:esp32:esp32c3",
-  "output": "Arduino\\Blink\\build",
-  "sketch": "Arduino\\Blink\\Blink.ino",
+  "output": "Arduino\\esp32c3_spa\\build",
+  "sketch": "Arduino\\esp32c3_spa\\esp32c3_spa.ino",
   "configuration": "JTAGAdapter=default,CDCOnBoot=default,PartitionScheme=default,CPUFreq=160,FlashMode=qio,FlashFreq=80,FlashSize=4M,UploadSpeed=921600,DebugLevel=none,EraseFlash=none,ZigbeeMode=default"
 }

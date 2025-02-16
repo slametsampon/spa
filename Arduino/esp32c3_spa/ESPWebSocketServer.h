@@ -6,7 +6,6 @@
 #include <ESPAsyncWebServer.h>
 #include <LittleFS.h>
 #include <AsyncTCP.h>
-#include <ESPAsyncWebSocket.h>
 
 /**
  * @class ESPWebSocketServer
@@ -16,9 +15,9 @@ class ESPWebSocketServer {
 private:
     const char* ssid = "ESP32C3-AP";  ///< Nama Access Point (AP)
     const char* password = "12345678"; ///< Password AP
-    IPAddress local_IP = IPAddress(192.168.10.1); ///< IP Address ESP32-C3
-    IPAddress gateway = IPAddress(192.168.10.1); ///< Gateway
-    IPAddress subnet = IPAddress(255.255.255.0); ///< Subnet mask
+    IPAddress local_IP = IPAddress(192,168,10,1); ///< IP Address ESP32-C3
+    IPAddress gateway = IPAddress(192,168,10,1); ///< Gateway
+    IPAddress subnet = IPAddress(255,255,255,0); ///< Subnet mask
 
     AsyncWebServer server; ///< Objek untuk menangani server HTTP
     AsyncWebSocket ws; ///< Objek untuk menangani WebSocket
