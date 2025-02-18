@@ -1,12 +1,17 @@
-#define LED_BUILTIN 8  // LED built-in ESP32-C3 ada di GPIO8
+#include <Arduino.h>
+int led = 8;
 
 void setup() {
-  pinMode(LED_BUILTIN, OUTPUT);
+  // initialize digital pin led as an output
+  pinMode(led, OUTPUT);
+  Serial.begin(9600);
 }
 
 void loop() {
-  digitalWrite(LED_BUILTIN, HIGH);  
-  delay(1000);                      
-  digitalWrite(LED_BUILTIN, LOW);   
-  delay(1000);                      
+  digitalWrite(led, LOW);    // turn the LED on
+  delay(1000);               // wait for a second
+  Serial.println("OFF");
+  digitalWrite(led, HIGH);   // turn the LED off
+  delay(1000);               // wait for a second
+  Serial.println("ON");
 }
