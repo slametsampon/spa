@@ -4,7 +4,7 @@ int led = 8;
 void setup() {
   // initialize digital pin led as an output
   pinMode(led, OUTPUT);
-  Serial.begin(9600);
+  Serial.begin(115200);
 }
 
 void loop() {
