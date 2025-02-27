@@ -41,24 +41,32 @@ void ESPWebServer::begin() {
         Serial.println(IP);
 
         // Tentukan rute untuk root URL
-        server.on("/", std::bind(&ESPWebServer::handleRoot, this));
+        server.on("/", std::bind(&ESPWebServer::serveHTML, this));
 
         // Memulai server
         server.begin();
         Serial.println("🚀 Server web telah dimulai!");
+    }
+    // Inisialisasi LittleFS
+    if (!LittleFS.begin()) {
+        Serial.println("❌ Gagal mount LittleFS!");
+        return;
+    } else {
+        Serial.println("✅ LittleFS berhasil dimount!");
     }
 }
 
 /**
  * @brief Handler untuk menangani request ke root "/".
  */
-void ESPWebServer::handleRoot() {
-    Serial.println("Permintaan masuk ke halaman utama...");
-    digitalWrite(LED_BUILTIN, HIGH);  // LED menyala saat ada request
-    server.send(200, "text/html", "<h1>ESP32-C3 Web Server (OOP) dengan IP Kustom</h1>");
-    delay(500);
-    digitalWrite(LED_BUILTIN, LOW);   // Matikan LED setelah respons dikirim
-}
+// void ESPWebServer::handleRoot() {
+//     Serial.println("Permintaan masuk ke halaman utama...");
+//     digitalWrite(LED_BUILTIN, HIGH);  // LED menyala saat ada request
+//     // server.send(200, "text/html", "<h1>ESP32-C3 Web Server (OOP) dengan IP Kustom</h1>");
+//     server.on("/", std::bind(&ESPWebServer::serveHTML, this));
+//     delay(500);
+//     digitalWrite(LED_BUILTIN, LOW);   // Matikan LED setelah respons dikirim
+// }
 
 /**
  * @brief Menangani request HTTP dari klien.
@@ -84,4 +92,18 @@ void ESPWebServer::updateLED() {
         digitalWrite(LED_BUILTIN, LOW);
         delay(200);
     }
+}
+
+void ESPWebServer::serveHTML() {
+    File file = LittleFS.open("/index.html", "r");  // Buka file di LittleFS
+
+    if (!file) {
+        Serial.println("❌ Gagal membuka index.html!");
+        server.send(500, "text/plain", "Gagal memuat halaman.");
+        return;
+    }
+
+    Serial.println("✅ Mengirim index.html dari LittleFS...");
+    server.streamFile(file, "text/html");  // Kirim ke klien
+    file.close();
 }

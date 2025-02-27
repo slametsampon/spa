@@ -3,6 +3,7 @@
 
 #include <WiFi.h>
 #include <WebServer.h>
+#include <LittleFS.h>  // Tambahkan ini
 
 #define LED_BUILTIN 8  // LED bawaan ESP32-C3
 
@@ -45,6 +46,11 @@ public:
      * @brief Memproses status LED sebagai indikator sistem.
      */
     void updateLED();
+
+    /**
+     * @brief Menyajikan file HTML dari LittleFS.
+     */
+    void serveHTML();
 
 private:
     /**
