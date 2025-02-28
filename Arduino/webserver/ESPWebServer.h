@@ -52,11 +52,24 @@ public:
      */
     void serveHTML();
 
+    /**
+     * @brief Menyajikan file statis seperti HTML, CSS, JS, dan gambar dari LittleFS.
+     * @param path Path file yang diminta.
+     */
+    void handleStaticFiles(String path);
+    void handleStaticFiles();  // Versi tanpa parameter untuk onNotFound
+
 private:
     /**
      * @brief Menangani permintaan ke root URL ("/").
      */
     void handleRoot();
+    /**
+     * @brief Menentukan tipe konten berdasarkan ekstensi file.
+     * @param filename Nama file yang diminta.
+     * @return String berisi MIME type.
+     */
+    String getContentType(String filename);
 };
 
 #endif

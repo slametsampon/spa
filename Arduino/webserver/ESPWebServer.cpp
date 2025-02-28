@@ -42,11 +42,13 @@ void ESPWebServer::begin() {
 
         // Tentukan rute untuk root URL
         server.on("/", std::bind(&ESPWebServer::serveHTML, this));
+        server.onNotFound([this]() { this->handleStaticFiles(server.uri()); });
 
         // Memulai server
         server.begin();
         Serial.println("🚀 Server web telah dimulai!");
     }
+
     // Inisialisasi LittleFS
     if (!LittleFS.begin()) {
         Serial.println("❌ Gagal mount LittleFS!");
@@ -55,18 +57,6 @@ void ESPWebServer::begin() {
         Serial.println("✅ LittleFS berhasil dimount!");
     }
 }
-
-/**
- * @brief Handler untuk menangani request ke root "/".
- */
-// void ESPWebServer::handleRoot() {
-//     Serial.println("Permintaan masuk ke halaman utama...");
-//     digitalWrite(LED_BUILTIN, HIGH);  // LED menyala saat ada request
-//     // server.send(200, "text/html", "<h1>ESP32-C3 Web Server (OOP) dengan IP Kustom</h1>");
-//     server.on("/", std::bind(&ESPWebServer::serveHTML, this));
-//     delay(500);
-//     digitalWrite(LED_BUILTIN, LOW);   // Matikan LED setelah respons dikirim
-// }
 
 /**
  * @brief Menangani request HTTP dari klien.
@@ -94,16 +84,48 @@ void ESPWebServer::updateLED() {
     }
 }
 
+/**
+ * @brief Menyajikan file index.html dari LittleFS.
+ */
 void ESPWebServer::serveHTML() {
-    File file = LittleFS.open("/index.html", "r");  // Buka file di LittleFS
+    handleStaticFiles("/index.html");
+}
+
+/**
+ * @brief Menyajikan file statis seperti CSS, JS, dan gambar dari LittleFS.
+ */
+void ESPWebServer::handleStaticFiles(String path) {
+    if (path == "/") {
+        path = "/index.html";
+    }
+
+    String contentType = getContentType(path);
+    File file = LittleFS.open(path, "r");
 
     if (!file) {
-        Serial.println("❌ Gagal membuka index.html!");
-        server.send(500, "text/plain", "Gagal memuat halaman.");
+        server.send(404, "text/plain", "File tidak ditemukan");
         return;
     }
 
-    Serial.println("✅ Mengirim index.html dari LittleFS...");
-    server.streamFile(file, "text/html");  // Kirim ke klien
+    server.streamFile(file, contentType);
     file.close();
+}
+
+void ESPWebServer::handleStaticFiles() {
+    handleStaticFiles(server.uri());
+}
+
+/**
+ * @brief Menentukan tipe konten berdasarkan ekstensi file.
+ */
+String ESPWebServer::getContentType(String filename) {
+    if (filename.endsWith(".html")) return "text/html";
+    if (filename.endsWith(".css")) return "text/css";
+    if (filename.endsWith(".js")) return "application/javascript";
+    if (filename.endsWith(".png")) return "image/png";
+    if (filename.endsWith(".jpg")) return "image/jpeg";
+    if (filename.endsWith(".svg")) return "image/svg+xml";
+    if (filename.endsWith(".webp")) return "image/webp";
+    if (filename.endsWith(".ico")) return "image/x-icon";
+    return "text/plain";
 }
