@@ -7497,17 +7497,17 @@
     firstUpdated() {
       this.navbarControl();
     }
-    /**
-     * Controls the behavior of the navigation menu.
-     * - Toggles the menu visibility when the hamburger button is clicked.
-     * - Closes the menu when a navigation link is clicked.
-     */
     navbarControl() {
       const menuToggle = this.renderRoot.querySelector(
         "#menu-toggle"
       );
       const menu = this.renderRoot.querySelector("#menu");
-      if (!menuToggle || !menu) return;
+      const userMenuLogout = this.renderRoot.querySelector("#user-menu-logout");
+      const userMenuLogoutButton = this.renderRoot.querySelector(
+        "#user-menu-logout-button"
+      );
+      if (!menuToggle || !menu || !userMenuLogout || !userMenuLogoutButton)
+        return;
       menuToggle.addEventListener("click", () => {
         menu.classList.toggle("hidden");
       });
@@ -7516,13 +7516,31 @@
           menu.classList.add("hidden");
         });
       });
-      const userMenuLogout = this.renderRoot.querySelector("#user-menu-logout");
-      const userMenuLogoutButton = this.renderRoot.querySelector(
-        "#user-menu-logout-button"
-      );
-      if (!userMenuLogout || !userMenuLogoutButton) return;
-      userMenuLogoutButton.addEventListener("click", () => {
+      userMenuLogoutButton.addEventListener("click", (event) => {
+        event.stopPropagation();
         userMenuLogout.classList.toggle("hidden");
+      });
+      document.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!menu.contains(target) && !menuToggle.contains(target)) {
+          menu.classList.add("hidden");
+        }
+        if (!userMenuLogout.contains(target) && !userMenuLogoutButton.contains(target)) {
+          userMenuLogout.classList.add("hidden");
+        }
+      });
+      document.addEventListener("click", (event) => {
+        const menu2 = this.renderRoot.querySelector(
+          "#user-menu-logout"
+        );
+        const button = this.renderRoot.querySelector(
+          "#user-menu-logout-button"
+        );
+        if (menu2 && button) {
+          if (!menu2.contains(event.target) && !button.contains(event.target)) {
+            menu2.classList.add("hidden");
+          }
+        }
       });
     }
     /**
@@ -7533,6 +7551,12 @@
       this.isLoggedIn = false;
       this.username = "";
       window.location.href = "#/auth/login";
+    }
+    getUserRoles() {
+      return StorageHelper.getItem("role") || "No Role";
+    }
+    getUserToken() {
+      return StorageHelper.getItem("token") || "No Token";
     }
     /**
      * Renders the navbar component.
@@ -7609,13 +7633,20 @@
                       ${this.username.charAt(0)}
                     </div>
                   </button>
+                  <!-- Dropdown User Detail & Logout -->
                   <div
                     id="user-menu-logout"
-                    class="hidden absolute right-0 mt-2 w-30 bg-white text-gray-800 shadow-lg rounded-md"
+                    class="hidden absolute right-0 mt-2 w-60 bg-white text-gray-800 shadow-lg rounded-md p-3 text-sm"
                   >
+                    <p><strong>Username:</strong> ${this.username}</p>
+                    <p><strong>Role:</strong> ${this.getUserRoles()}</p>
+                    <p><strong>Token:</strong> ${this.getUserToken()}</p>
+
+                    <hr class="my-2" />
+
                     <button
                       @click=${this.logout}
-                      class="block w-full text-left px-4 py-2 hover:bg-gray-200"
+                      class="block w-full text-left px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-md"
                     >
                       Logout
                     </button>
@@ -23285,160 +23316,76 @@ git push -u origin main
     t3("custom-chart")
   ], CustomChart);
 
-  // src/components/table-custom.ts
-  var TableCustom = class extends r4 {
+  // src/components/device-table.ts
+  var DeviceTable = class extends r4 {
     data = [];
     enableAction = false;
-    title = "Tabel Data";
-    /** Gunakan Light DOM agar tetap menggunakan styling global */
     createRenderRoot() {
       return this;
     }
     render() {
-      if (!this.data.length) {
-        return x`
-        <div class="bg-white p-6 rounded-lg shadow-md mt-4">
-          <h2 class="text-xl font-semibold text-gray-800 mb-3">
-            ${this.title}
-          </h2>
-          <p class="text-gray-500 text-center">Tidak ada data tersedia.</p>
-        </div>
-      `;
-      }
-      const headers = Object.keys(this.data[0]);
       return x`
-      <div
-        class="bg-gradient-to-r from-blue-500 to-indigo-600 p-1 rounded-lg shadow-md mt-4"
-      >
-        <div class="bg-white p-6 rounded-lg">
-          <h2 class="text-xl font-semibold text-gray-800 mb-3">
-            ${this.title}
-          </h2>
-          <div class="overflow-x-auto">
-            <table class="w-full border-collapse border border-gray-300">
-              <thead>
-                <tr class="bg-blue-100">
-                  ${headers.map(
-        (header) => x`<th
-                        class="border border-gray-300 px-4 py-2 text-left font-semibold"
-                      >
-                        ${header}
-                      </th>`
+      <table class="w-full border-collapse border border-gray-300">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="border p-2">Nama Perangkat</th>
+            <th class="border p-2">Status</th>
+            ${this.enableAction ? x`<th class="border p-2">Aksi</th>` : ""}
+          </tr>
+        </thead>
+        <tbody>
+          ${this.data.map(
+        (row) => x`
+              <tr class="border">
+                <td class="border p-2">${row.tagname}</td>
+                <td class="border p-2">${row.status}</td>
+                ${this.enableAction ? x`
+                      <td class="border p-2">
+                        <button
+                          class="px-3 py-1 text-white rounded-md ${row.status === "On" ? "bg-red-600" : "bg-green-600"}"
+                          @click=${() => this.handleAction(row)}
+                        >
+                          ${row.status === "On" ? "Matikan" : "Nyalakan"}
+                        </button>
+                      </td>
+                    ` : ""}
+              </tr>
+            `
       )}
-                  ${this.enableAction ? x`<th
-                        class="border border-gray-300 px-4 py-2 text-left font-semibold"
-                      >
-                        Aksi
-                      </th>` : ""}
-                </tr>
-              </thead>
-              <tbody>
-                ${this.data.map(
-        (row, index2) => x`
-                    <tr
-                      class="${index2 % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-green-100"
-                    >
-                      ${headers.map(
-          (key) => x`<td class="border border-gray-300 px-4 py-2">
-                            ${row[key]}
-                          </td>`
-        )}
-                      ${this.enableAction ? x`
-                            <td class="border border-gray-300 px-4 py-2">
-                              <button
-                                class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
-                                @click=${() => this.handleAction(row)}
-                              >
-                                Aksi
-                              </button>
-                            </td>
-                          ` : ""}
-                    </tr>
-                  `
-      )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+        </tbody>
+      </table>
     `;
     }
-    /**
-     * Handler untuk tombol aksi.
-     * @param {Object} row - Data dari baris yang diklik.
-     */
     handleAction(row) {
-      alert(`Aksi diklik untuk ${JSON.stringify(row)}`);
+      const newState = row.status === "On" ? "Off" : "On";
+      console.log(`[DeviceTable] Aksi tombol: ${row.tagname} -> ${newState}`);
+      this.dispatchEvent(
+        new CustomEvent("toggle-device", {
+          detail: { tagname: row.tagname, state: newState },
+          bubbles: true,
+          composed: true
+        })
+      );
     }
   };
   __decorateClass([
     n4({ type: Array })
-  ], TableCustom.prototype, "data", 2);
+  ], DeviceTable.prototype, "data", 2);
   __decorateClass([
     n4({ type: Boolean })
-  ], TableCustom.prototype, "enableAction", 2);
-  __decorateClass([
-    n4({ type: String })
-  ], TableCustom.prototype, "title", 2);
-  TableCustom = __decorateClass([
-    t3("table-custom")
-  ], TableCustom);
+  ], DeviceTable.prototype, "enableAction", 2);
+  DeviceTable = __decorateClass([
+    t3("device-table")
+  ], DeviceTable);
 
   // src/pages/dashboard.ts
   var DashboardPage = class extends r4 {
     username = "";
     role = "";
-    /**
-     * Data dummy untuk grafik Line dan Bar.
-     */
-    chartData = [
-      { name: "Jan", value: 30 },
-      { name: "Feb", value: 50 },
-      { name: "Mar", value: 70 },
-      { name: "Apr", value: 90 }
-    ];
-    /**
-     * Data dummy untuk grafik Pie.
-     */
-    pieData = [
-      { name: "Produk A", value: 40 },
-      { name: "Produk B", value: 35 },
-      { name: "Produk C", value: 25 }
-    ];
-    /**
-     * Data dummy untuk tabel perangkat IoT.
-     */
-    tableData = [
-      {
-        tagname: "Pompa-1",
-        link: "connected",
-        status: "On",
-        automationMode: "Sensor"
-      },
-      {
-        tagname: "Sensor-1",
-        link: "fail",
-        status: "Off",
-        automationMode: "Sensor"
-      }
-    ];
-    /**
-     * Data dummy untuk tabel karyawan.
-     */
-    anotherTableData = [
-      {
-        nama: "John Doe",
-        umur: 30,
-        pekerjaan: "Engineer",
-        lokasi: "Jakarta"
-      },
-      {
-        nama: "Jane Smith",
-        umur: 25,
-        pekerjaan: "Designer",
-        lokasi: "Bandung"
-      }
-    ];
+    simulationFlag = true;
+    sensorData = [];
+    actuatorData = [];
+    ESP_SERVER = "http://192.168.50.1";
     createRenderRoot() {
       return this;
     }
@@ -23446,77 +23393,143 @@ git push -u origin main
       super.connectedCallback();
       if (!AuthService.isAuthenticated()) {
         window.location.href = "#/auth/login";
-      } else {
-        this.username = StorageHelper.getItem("username") || "Guest";
-        this.role = StorageHelper.getItem("role") || "guest";
+        return;
       }
+      this.username = StorageHelper.getItem("username") || "Guest";
+      this.role = StorageHelper.getItem("role") || "guest";
       if (!AuthService.isAuthorized(["ViewDevices", "ManageDevices"])) {
-        console.log("[Auth] Akses ditolak untuk halaman Dashboard!");
+        console.log("[Auth] Akses ditolak!");
         window.location.href = "#/";
+        return;
+      }
+      console.log("[Dashboard] Inisialisasi berhasil!");
+      this.fetchData();
+      setInterval(() => {
+        console.log(
+          `[Interval] Fetching data at ${(/* @__PURE__ */ new Date()).toLocaleTimeString()}`
+        );
+        this.fetchData();
+      }, 6e4);
+    }
+    async fetchData() {
+      console.log(`[Fetch Data] Mode Simulasi: ${this.simulationFlag}`);
+      if (this.simulationFlag) {
+        this.sensorData = [
+          { name: "pH Air", value: (5 + Math.random() * 3).toFixed(2) },
+          { name: "EC", value: (1.2 + Math.random() * 0.5).toFixed(2) },
+          { name: "Suhu Air", value: (20 + Math.random() * 5).toFixed(1) + "\xB0C" }
+        ];
+        this.actuatorData = [
+          { tagname: "Pompa Air", status: Math.random() > 0.5 ? "On" : "Off" },
+          { tagname: "Lampu Grow", status: Math.random() > 0.5 ? "On" : "Off" }
+        ];
+        console.log("[Simulasi] Data Sensor:", this.sensorData);
+        console.log("[Simulasi] Data Aktuator:", this.actuatorData);
+      } else {
+        try {
+          const response = await fetch(`${this.ESP_SERVER}/data`);
+          const data = await response.json();
+          this.sensorData = data.sensors;
+          this.actuatorData = data.actuators;
+          console.log("[ESP32] Data Sensor:", this.sensorData);
+          console.log("[ESP32] Data Aktuator:", this.actuatorData);
+        } catch (error) {
+          console.error("[ESP32] Gagal mengambil data:", error);
+        }
+      }
+      this.requestUpdate();
+    }
+    async toggleActuator(tagname, state) {
+      console.log(`[Toggle Actuator] Mengubah ${tagname} ke ${state}`);
+      try {
+        await fetch(`${this.ESP_SERVER}/control`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ tagname, state })
+        });
+        console.log(`[ESP32] Perintah terkirim: ${tagname} -> ${state}`);
+        this.fetchData();
+      } catch (error) {
+        console.error("[ESP32] Gagal mengirim perintah:", error);
       }
     }
-    logout() {
-      AuthService.logout();
-      window.location.href = "#/auth/login";
+    handleToggleClick(row) {
+      const newState = row.status === "On" ? "Off" : "On";
+      console.log(`[Button Click] ${row.tagname} -> ${newState}`);
+      this.toggleActuator(row.tagname, newState);
     }
     render() {
       return x`
       <app-navbar></app-navbar>
-      <main
-        class="p-8 my-14 bg-gradient-to-tr from-gray-200 to-gray-300 min-h-screen"
-      >
-        <h1 class="text-3xl font-extrabold text-blue-900">Dashboard</h1>
-        <p class="text-lg text-gray-700">
-          Selamat datang, <strong>${this.username}</strong>!
-        </p>
-        <p class="text-gray-700">Role Anda: <strong>${this.role}</strong></p>
+      <main class="p-8 my-14 min-h-screen bg-gray-100">
+        <h1 class="text-3xl font-extrabold text-blue-900">
+          Dashboard Hidroponik
+        </h1>
 
-        <!-- 📊 Tambahkan Chart ke Dashboard -->
-        <section
-          class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          <div class="bg-white p-4 rounded-lg shadow-md">
-            <h2 class="text-xl font-semibold text-gray-800 mb-3">
-              Grafik Penjualan
-            </h2>
-            <custom-chart type="line" .data="${this.chartData}"></custom-chart>
-          </div>
+        <!-- Tombol Simulasi -->
+        <div class="mt-4">
+          <button
+            @click=${() => {
+        this.simulationFlag = !this.simulationFlag;
+        console.log(`[Mode Simulasi] Status: ${this.simulationFlag}`);
+        this.fetchData();
+      }}
+            class="px-4 py-2 bg-blue-600 text-white rounded-md"
+          >
+            ${this.simulationFlag ? "Gunakan Data Real" : "Gunakan Simulasi"}
+          </button>
+        </div>
 
-          <div class="bg-white p-4 rounded-lg shadow-md">
-            <h2 class="text-xl font-semibold text-gray-800 mb-3">
-              Statistik Pengguna
-            </h2>
-            <custom-chart type="bar" .data="${this.chartData}"></custom-chart>
-          </div>
-
-          <div class="bg-white p-4 rounded-lg shadow-md">
-            <h2 class="text-xl font-semibold text-gray-800 mb-3">
-              Distribusi Produk
-            </h2>
-            <custom-chart type="pie" .data="${this.pieData}"></custom-chart>
+        <!-- Data Sensor -->
+        <section class="mt-6">
+          <h2 class="text-xl font-semibold text-gray-800 mb-3">Data Sensor</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            ${this.sensorData.map(
+        (sensor) => x`
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                  <h3 class="text-lg font-semibold text-gray-700">
+                    ${sensor.name}
+                  </h3>
+                  <p class="text-2xl font-bold text-blue-600">
+                    ${sensor.value}
+                  </p>
+                </div>
+              `
+      )}
           </div>
         </section>
 
-        <!-- 📋 Tabel Perangkat IoT -->
+        <!-- Kontrol Perangkat -->
         <section class="mt-8">
           <h2 class="text-xl font-semibold text-gray-800 mb-3">
-            Data Perangkat IoT
+            Kontrol Perangkat
           </h2>
-          <table-custom .data="${this.tableData}" enableAction></table-custom>
-        </section>
-
-        <!-- 📋 Tabel Karyawan -->
-        <section class="mt-8">
-          <h2 class="text-xl font-semibold text-gray-800 mb-3">
-            Data Karyawan
-          </h2>
-          <table-custom .data="${this.anotherTableData}"></table-custom>
+          <device-table
+            .data="${this.actuatorData}"
+            enableAction
+            @toggle-device=${(event) => this.handleToggleClick(event.detail)}
+          ></device-table>
         </section>
       </main>
       <app-footer></app-footer>
     `;
     }
   };
+  __decorateClass([
+    n4({ type: String })
+  ], DashboardPage.prototype, "username", 2);
+  __decorateClass([
+    n4({ type: String })
+  ], DashboardPage.prototype, "role", 2);
+  __decorateClass([
+    r6()
+  ], DashboardPage.prototype, "simulationFlag", 2);
+  __decorateClass([
+    r6()
+  ], DashboardPage.prototype, "sensorData", 2);
+  __decorateClass([
+    r6()
+  ], DashboardPage.prototype, "actuatorData", 2);
   DashboardPage = __decorateClass([
     t3("page-dashboard")
   ], DashboardPage);
