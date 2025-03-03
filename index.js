@@ -7652,31 +7652,38 @@
                     </button>
                   </div>
                 ` : x`
-                  <!-- Jika belum login -->
-                  <button
-                    id="user-menu-logout-button"
-                    class="flex items-center space-x-2 focus:outline-none bg-orange-600 rounded-full font-bold"
-                  >
-                    <div
-                      class="bg-orange-600 w-10 h-10 rounded-full flex justify-center items-center text-white text-xl font-bold"
-                    >
-                      -
+                    <!-- Jika belum login -->
+                    <div class="relative">
+                      <button
+                        id="user-menu-logout-button"
+                        class="flex items-center space-x-2 focus:outline-none bg-gradient-to-r from-orange-500 to-orange-700 rounded-full font-bold shadow-md hover:shadow-lg transition duration-300"
+                      >
+                        <div
+                          class="w-12 h-12 bg-gradient-to-r from-orange-600 to-orange-800 rounded-full flex justify-center items-center text-white text-2xl font-bold"
+                        >
+                          👤
+                        </div>
+                      </button>
+
+                      <!-- Dropdown menu -->
+                      <div
+                        id="user-menu-logout"
+                        class="hidden absolute right-0 mt-3 w-40 bg-white text-gray-800 shadow-md rounded-md border border-gray-200 transition duration-200"
+                      >
+                        <a
+                          href="#/auth/login"
+                          class="block px-5 py-3 hover:bg-orange-100 transition duration-200"
+                        >
+                          🔑 Login
+                        </a>
+                        <a
+                          href="#/auth/register"
+                          class="block px-5 py-3 hover:bg-orange-100 transition duration-200"
+                        >
+                          📝 Register
+                        </a>
+                      </div>
                     </div>
-                  </button>
-                  <div
-                    id="user-menu-logout"
-                    class="hidden absolute right-0 mt-2 w-30 bg-white text-gray-800 shadow-lg rounded-md"
-                  >
-                    <a
-                      href="#/auth/login"
-                      class="block px-4 py-2 hover:bg-gray-200"
-                      >Login</a
-                    >
-                    <a
-                      href="#/auth/register"
-                      class="block px-4 py-2 hover:bg-gray-200"
-                      >Register</a
-                    >
                   </div>
                 `}
           </div>
@@ -23325,24 +23332,26 @@ git push -u origin main
     }
     render() {
       return x`
-      <table class="w-full border-collapse border border-gray-300">
+      <table class="w-full border-collapse border border-gray-500 shadow-lg">
         <thead>
-          <tr class="bg-gray-100">
-            <th class="border p-2">Nama Perangkat</th>
-            <th class="border p-2">Status</th>
-            ${this.enableAction ? x`<th class="border p-2">Aksi</th>` : ""}
+          <tr class="bg-gray-200 text-gray-900">
+            <th class="border border-gray-500 p-3 text-left">Nama Perangkat</th>
+            <th class="border border-gray-500 p-3 text-left">Status</th>
+            ${this.enableAction ? x`<th class="border border-gray-500 p-3 text-left">Aksi</th>` : ""}
           </tr>
         </thead>
         <tbody>
           ${this.data.map(
-        (row) => x`
-              <tr class="border">
-                <td class="border p-2">${row.tagname}</td>
-                <td class="border p-2">${row.status}</td>
+        (row, index2) => x`
+              <tr
+                class="${index2 % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-200"
+              >
+                <td class="border border-gray-500 p-3">${row.tagname}</td>
+                <td class="border border-gray-500 p-3">${row.status}</td>
                 ${this.enableAction ? x`
-                      <td class="border p-2">
+                      <td class="border border-gray-500 p-3">
                         <button
-                          class="px-3 py-1 text-white rounded-md ${row.status === "On" ? "bg-red-600" : "bg-green-600"}"
+                          class="px-4 py-2 text-white font-semibold rounded-md ${row.status === "On" ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}"
                           @click=${() => this.handleAction(row)}
                         >
                           ${row.status === "On" ? "Matikan" : "Nyalakan"}
@@ -23461,20 +23470,25 @@ git push -u origin main
     render() {
       return x`
       <app-navbar></app-navbar>
-      <main class="p-8 my-14 min-h-screen bg-gray-100">
-        <h1 class="text-3xl font-extrabold text-blue-900">
+      <main
+        class="p-8 my-14 min-h-screen"
+        style="background: linear-gradient(to bottom, #a7f3d0, #3b82f6);"
+      >
+        <h1
+          class="text-3xl font-extrabold text-white text-center drop-shadow-lg"
+        >
           Dashboard Hidroponik
         </h1>
 
         <!-- Tombol Simulasi -->
-        <div class="mt-4">
+        <div class="mt-4 flex justify-center">
           <button
             @click=${() => {
         this.simulationFlag = !this.simulationFlag;
         console.log(`[Mode Simulasi] Status: ${this.simulationFlag}`);
         this.fetchData();
       }}
-            class="px-4 py-2 bg-blue-600 text-white rounded-md"
+            class="px-4 py-2 bg-white text-blue-600 font-semibold rounded-md shadow-md hover:bg-gray-200"
           >
             ${this.simulationFlag ? "Gunakan Data Real" : "Gunakan Simulasi"}
           </button>
@@ -23482,11 +23496,13 @@ git push -u origin main
 
         <!-- Data Sensor -->
         <section class="mt-6">
-          <h2 class="text-xl font-semibold text-gray-800 mb-3">Data Sensor</h2>
+          <h2 class="text-xl font-semibold text-white mb-3 text-center">
+            Data Sensor
+          </h2>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             ${this.sensorData.map(
         (sensor) => x`
-                <div class="bg-white p-4 rounded-lg shadow-md">
+                <div class="bg-white p-4 rounded-lg shadow-md text-center">
                   <h3 class="text-lg font-semibold text-gray-700">
                     ${sensor.name}
                   </h3>
@@ -23501,7 +23517,7 @@ git push -u origin main
 
         <!-- Kontrol Perangkat -->
         <section class="mt-8">
-          <h2 class="text-xl font-semibold text-gray-800 mb-3">
+          <h2 class="text-xl font-semibold text-white mb-3 text-center">
             Kontrol Perangkat
           </h2>
           <device-table
