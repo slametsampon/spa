@@ -110,7 +110,7 @@ export class DashboardPage extends LitElement {
       <app-navbar></app-navbar>
       <main
         class="p-8 my-14 min-h-screen"
-        style="background: linear-gradient(to bottom, #a7f3d0, #3b82f6);"
+        style="background: linear-gradient(to top right, #a7f3d0, #3b82f6);"
       >
         <h1
           class="text-3xl font-extrabold text-white text-center drop-shadow-lg"

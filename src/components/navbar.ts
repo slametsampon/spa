@@ -217,7 +217,7 @@ export class Navbar extends LitElement {
             <!-- Menu -->
             <ul
               id="menu"
-              class="hidden mr-2 px-3 space-y-2 py-3 flex-col text-blue-600 bg-green-100 absolute top-11 right-0 sm:bg-blue-600 sm:text-white rounded-md sm:static sm:flex sm:flex-row sm:space-y-0 sm:space-x-8 sm:min-w-fit sm:mr-6 min-w-max"
+              class="hidden mr-2 px-3 space-y-2 py-3 flex-col bg-white text-gray-800 shadow-lg absolute top-11 right-0 sm:bg-blue-600 sm:text-white rounded-md sm:static sm:flex sm:flex-row sm:space-y-0 sm:space-x-8 sm:min-w-fit sm:mr-6 min-w-max"
             >
               ${this.routes.map(
                 (route) => html`
