@@ -16,28 +16,34 @@ export class DeviceTable extends LitElement {
 
   render() {
     return html`
-      <table class="w-full border-collapse border border-gray-300">
+      <table class="w-full border-collapse border border-gray-500 shadow-lg">
         <thead>
-          <tr class="bg-gray-100">
-            <th class="border p-2">Nama Perangkat</th>
-            <th class="border p-2">Status</th>
-            ${this.enableAction ? html`<th class="border p-2">Aksi</th>` : ''}
+          <tr class="bg-gray-200 text-gray-900">
+            <th class="border border-gray-500 p-3 text-left">Nama Perangkat</th>
+            <th class="border border-gray-500 p-3 text-left">Status</th>
+            ${this.enableAction
+              ? html`<th class="border border-gray-500 p-3 text-left">Aksi</th>`
+              : ''}
           </tr>
         </thead>
         <tbody>
           ${this.data.map(
-            (row) => html`
-              <tr class="border">
-                <td class="border p-2">${row.tagname}</td>
-                <td class="border p-2">${row.status}</td>
+            (row, index) => html`
+              <tr
+                class="${index % 2 === 0
+                  ? 'bg-gray-50'
+                  : 'bg-white'} hover:bg-gray-200"
+              >
+                <td class="border border-gray-500 p-3">${row.tagname}</td>
+                <td class="border border-gray-500 p-3">${row.status}</td>
                 ${this.enableAction
                   ? html`
-                      <td class="border p-2">
+                      <td class="border border-gray-500 p-3">
                         <button
-                          class="px-3 py-1 text-white rounded-md ${row.status ===
+                          class="px-4 py-2 text-white font-semibold rounded-md ${row.status ===
                           'On'
-                            ? 'bg-red-600'
-                            : 'bg-green-600'}"
+                            ? 'bg-red-600 hover:bg-red-700'
+                            : 'bg-green-600 hover:bg-green-700'}"
                           @click=${() => this.handleAction(row)}
                         >
                           ${row.status === 'On' ? 'Matikan' : 'Nyalakan'}
