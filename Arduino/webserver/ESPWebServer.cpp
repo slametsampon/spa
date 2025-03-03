@@ -6,6 +6,10 @@
 ESPWebServer::ESPWebServer(const char* ssid, const char* password, IPAddress local_IP, IPAddress gateway, IPAddress subnet)
     : ssid(ssid), password(password), local_IP(local_IP), gateway(gateway), subnet(subnet), server(80), apSuccess(false) {}
 
+void ESPWebServer::setSensorManager(SensorManager* manager) {
+    sensorManager = manager;
+}
+    
 /**
  * @brief Memulai Access Point dan server web.
  */
@@ -40,8 +44,11 @@ void ESPWebServer::begin() {
         Serial.print("📡 Alamat IP AP: ");
         Serial.println(IP);
 
-        // Tentukan rute untuk root URL
+        // Routing Endpoint
         server.on("/", std::bind(&ESPWebServer::serveHTML, this));
+        server.on("/data", HTTP_GET, std::bind(&ESPWebServer::handleDataRequest, this));
+        server.on("/control", HTTP_POST, std::bind(&ESPWebServer::handleControlRequest, this));
+        server.on("/config", HTTP_POST, std::bind(&ESPWebServer::handleConfigRequest, this));
         server.onNotFound([this]() { this->handleStaticFiles(server.uri()); });
 
         // Memulai server
@@ -63,6 +70,75 @@ void ESPWebServer::begin() {
  */
 void ESPWebServer::handleClient() {
     server.handleClient();
+}
+
+// ====== HANDLE DATA SENSOR & AKTUATOR (GET /data) ======
+void ESPWebServer::handleDataRequest() {
+    StaticJsonDocument<256> jsonDoc;
+
+    JsonArray sensors = jsonDoc.createNestedArray("sensors");
+    JsonObject sensor1 = sensors.createNestedObject();
+    sensor1["name"] = "pH Air";
+    sensor1["value"] = String(random(50, 80) / 10.0, 2); 
+
+    JsonObject sensor2 = sensors.createNestedObject();
+    sensor2["name"] = "EC";
+    sensor2["value"] = String(random(12, 17) / 10.0, 2);
+
+    JsonObject sensor3 = sensors.createNestedObject();
+    sensor3["name"] = "Suhu Air";
+    sensor3["value"] = String(random(200, 250) / 10.0, 1) + "°C"; 
+
+    JsonArray actuators = jsonDoc.createNestedArray("actuators");
+    JsonObject actuator1 = actuators.createNestedObject();
+    actuator1["tagname"] = "Pompa Air";
+    actuator1["status"] = (random(0, 2) == 1) ? "On" : "Off";
+
+    JsonObject actuator2 = actuators.createNestedObject();
+    actuator2["tagname"] = "Lampu Grow";
+    actuator2["status"] = (random(0, 2) == 1) ? "On" : "Off";
+
+    String jsonResponse;
+    serializeJson(jsonDoc, jsonResponse);
+
+    server.send(200, "application/json", jsonResponse);
+}
+
+// ====== HANDLE KONTROL AKTUATOR (POST /control) ======
+void ESPWebServer::handleControlRequest() {
+    if (server.hasArg("plain") == false) {
+        server.send(400, "text/plain", "Bad Request");
+        return;
+    }
+
+    String requestBody = server.arg("plain");
+    DynamicJsonDocument doc(256);
+    deserializeJson(doc, requestBody);
+
+    String tagname = doc["tagname"];
+    String state = doc["state"];
+
+    Serial.printf("Mengontrol %s ke %s\n", tagname.c_str(), state.c_str());
+
+    server.send(200, "application/json", R"({"status":"success"})");
+}
+
+void ESPWebServer::handleConfigRequest() {
+    if (!server.hasArg("plain")) {
+        server.send(400, "text/plain", "Bad Request");
+        return;
+    }
+
+    String requestBody = server.arg("plain");
+    DynamicJsonDocument doc(256);
+    deserializeJson(doc, requestBody);
+
+    bool simulationMode = doc["simulation"];
+    sensorManager->setSimulationMode(simulationMode);
+
+    Serial.printf("Mode Simulasi diubah ke: %s\n", simulationMode ? "ON" : "OFF");
+
+    server.send(200, "application/json", R"({"status":"success"})");
 }
 
 /**
