@@ -112,10 +112,6 @@ export class DashboardPage extends LitElement {
         <h1 class="text-3xl font-extrabold text-blue-900">
           Dashboard Hidroponik
         </h1>
-        <p class="text-lg text-gray-700">
-          Selamat datang, <strong>${this.username}</strong>!
-        </p>
-        <p class="text-gray-700">Role Anda: <strong>${this.role}</strong></p>
 
         <!-- Tombol Simulasi -->
         <div class="mt-4">
