@@ -265,31 +265,38 @@ export class Navbar extends LitElement {
                   </div>
                 `
               : html`
-                  <!-- Jika belum login -->
-                  <button
-                    id="user-menu-logout-button"
-                    class="flex items-center space-x-2 focus:outline-none bg-orange-600 rounded-full font-bold"
-                  >
-                    <div
-                      class="bg-orange-600 w-10 h-10 rounded-full flex justify-center items-center text-white text-xl font-bold"
-                    >
-                      -
+                    <!-- Jika belum login -->
+                    <div class="relative">
+                      <button
+                        id="user-menu-logout-button"
+                        class="flex items-center space-x-2 focus:outline-none bg-gradient-to-r from-orange-500 to-orange-700 rounded-full font-bold shadow-md hover:shadow-lg transition duration-300"
+                      >
+                        <div
+                          class="w-12 h-12 bg-gradient-to-r from-orange-600 to-orange-800 rounded-full flex justify-center items-center text-white text-2xl font-bold"
+                        >
+                          👤
+                        </div>
+                      </button>
+
+                      <!-- Dropdown menu -->
+                      <div
+                        id="user-menu-logout"
+                        class="hidden absolute right-0 mt-3 w-40 bg-white text-gray-800 shadow-md rounded-md border border-gray-200 transition duration-200"
+                      >
+                        <a
+                          href="#/auth/login"
+                          class="block px-5 py-3 hover:bg-orange-100 transition duration-200"
+                        >
+                          🔑 Login
+                        </a>
+                        <a
+                          href="#/auth/register"
+                          class="block px-5 py-3 hover:bg-orange-100 transition duration-200"
+                        >
+                          📝 Register
+                        </a>
+                      </div>
                     </div>
-                  </button>
-                  <div
-                    id="user-menu-logout"
-                    class="hidden absolute right-0 mt-2 w-30 bg-white text-gray-800 shadow-lg rounded-md"
-                  >
-                    <a
-                      href="#/auth/login"
-                      class="block px-4 py-2 hover:bg-gray-200"
-                      >Login</a
-                    >
-                    <a
-                      href="#/auth/register"
-                      class="block px-4 py-2 hover:bg-gray-200"
-                      >Register</a
-                    >
                   </div>
                 `}
           </div>

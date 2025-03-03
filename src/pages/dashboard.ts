@@ -108,20 +108,25 @@ export class DashboardPage extends LitElement {
   render() {
     return html`
       <app-navbar></app-navbar>
-      <main class="p-8 my-14 min-h-screen bg-gray-100">
-        <h1 class="text-3xl font-extrabold text-blue-900">
+      <main
+        class="p-8 my-14 min-h-screen"
+        style="background: linear-gradient(to bottom, #a7f3d0, #3b82f6);"
+      >
+        <h1
+          class="text-3xl font-extrabold text-white text-center drop-shadow-lg"
+        >
           Dashboard Hidroponik
         </h1>
 
         <!-- Tombol Simulasi -->
-        <div class="mt-4">
+        <div class="mt-4 flex justify-center">
           <button
             @click=${() => {
               this.simulationFlag = !this.simulationFlag;
               console.log(`[Mode Simulasi] Status: ${this.simulationFlag}`);
               this.fetchData();
             }}
-            class="px-4 py-2 bg-blue-600 text-white rounded-md"
+            class="px-4 py-2 bg-white text-blue-600 font-semibold rounded-md shadow-md hover:bg-gray-200"
           >
             ${this.simulationFlag ? 'Gunakan Data Real' : 'Gunakan Simulasi'}
           </button>
@@ -129,11 +134,13 @@ export class DashboardPage extends LitElement {
 
         <!-- Data Sensor -->
         <section class="mt-6">
-          <h2 class="text-xl font-semibold text-gray-800 mb-3">Data Sensor</h2>
+          <h2 class="text-xl font-semibold text-white mb-3 text-center">
+            Data Sensor
+          </h2>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             ${this.sensorData.map(
               (sensor) => html`
-                <div class="bg-white p-4 rounded-lg shadow-md">
+                <div class="bg-white p-4 rounded-lg shadow-md text-center">
                   <h3 class="text-lg font-semibold text-gray-700">
                     ${sensor.name}
                   </h3>
@@ -148,7 +155,7 @@ export class DashboardPage extends LitElement {
 
         <!-- Kontrol Perangkat -->
         <section class="mt-8">
-          <h2 class="text-xl font-semibold text-gray-800 mb-3">
+          <h2 class="text-xl font-semibold text-white mb-3 text-center">
             Kontrol Perangkat
           </h2>
           <device-table
