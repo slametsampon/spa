@@ -1,78 +1,25 @@
-import { LitElement, html, css } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { LitElement, html } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
 import { AuthService } from '../utils/auth-service.js';
 import { StorageHelper } from '../utils/storage-helper.js';
 import '../components/navbar.js';
 import '../components/footer.js';
 import '../components/custom-chart.js';
-import '../components/table-custom.js'; // ✅ Tambahkan tabel
+import '../components/device-table.js';
 
-/**
- * @customElement page-dashboard
- * @description Halaman dashboard yang hanya bisa diakses oleh pengguna yang sudah login.
- */
 @customElement('page-dashboard')
 export class DashboardPage extends LitElement {
-  public username: string = '';
-  public role: string = '';
+  @property({ type: String }) public username: string = '';
+  @property({ type: String }) public role: string = '';
 
-  /**
-   * Data dummy untuk grafik Line dan Bar.
-   */
-  private chartData = [
-    { name: 'Jan', value: 30 },
-    { name: 'Feb', value: 50 },
-    { name: 'Mar', value: 70 },
-    { name: 'Apr', value: 90 },
-  ];
+  @state() private simulationFlag: boolean = true;
+  @state() private sensorData: any[] = [];
+  @state() private actuatorData: any[] = [];
 
-  /**
-   * Data dummy untuk grafik Pie.
-   */
-  private pieData = [
-    { name: 'Produk A', value: 40 },
-    { name: 'Produk B', value: 35 },
-    { name: 'Produk C', value: 25 },
-  ];
-
-  /**
-   * Data dummy untuk tabel perangkat IoT.
-   */
-  private tableData = [
-    {
-      tagname: 'Pompa-1',
-      link: 'connected',
-      status: 'On',
-      automationMode: 'Sensor',
-    },
-    {
-      tagname: 'Sensor-1',
-      link: 'fail',
-      status: 'Off',
-      automationMode: 'Sensor',
-    },
-  ];
-
-  /**
-   * Data dummy untuk tabel karyawan.
-   */
-  private anotherTableData = [
-    {
-      nama: 'John Doe',
-      umur: 30,
-      pekerjaan: 'Engineer',
-      lokasi: 'Jakarta',
-    },
-    {
-      nama: 'Jane Smith',
-      umur: 25,
-      pekerjaan: 'Designer',
-      lokasi: 'Bandung',
-    },
-  ];
+  private ESP_SERVER = 'http://192.168.50.1';
 
   createRenderRoot() {
-    return this;
+    return this; // Menggunakan Light DOM
   }
 
   connectedCallback() {
@@ -80,76 +27,140 @@ export class DashboardPage extends LitElement {
 
     if (!AuthService.isAuthenticated()) {
       window.location.href = '#/auth/login';
-    } else {
-      this.username = StorageHelper.getItem('username') || 'Guest';
-      this.role = StorageHelper.getItem('role') || 'guest';
+      return;
     }
 
-    // Cek apakah user memiliki izin untuk mengakses Dashboard
+    this.username = StorageHelper.getItem('username') || 'Guest';
+    this.role = StorageHelper.getItem('role') || 'guest';
+
     if (!AuthService.isAuthorized(['ViewDevices', 'ManageDevices'])) {
-      console.log('[Auth] Akses ditolak untuk halaman Dashboard!');
+      console.log('[Auth] Akses ditolak!');
       window.location.href = '#/';
+      return;
+    }
+
+    console.log('[Dashboard] Inisialisasi berhasil!');
+
+    // Ambil data pertama kali
+    this.fetchData();
+
+    // Perbarui data setiap 60 detik
+    setInterval(() => {
+      console.log(
+        `[Interval] Fetching data at ${new Date().toLocaleTimeString()}`
+      );
+      this.fetchData();
+    }, 60000);
+  }
+
+  async fetchData() {
+    console.log(`[Fetch Data] Mode Simulasi: ${this.simulationFlag}`);
+
+    if (this.simulationFlag) {
+      this.sensorData = [
+        { name: 'pH Air', value: (5 + Math.random() * 3).toFixed(2) },
+        { name: 'EC', value: (1.2 + Math.random() * 0.5).toFixed(2) },
+        { name: 'Suhu Air', value: (20 + Math.random() * 5).toFixed(1) + '°C' },
+      ];
+      this.actuatorData = [
+        { tagname: 'Pompa Air', status: Math.random() > 0.5 ? 'On' : 'Off' },
+        { tagname: 'Lampu Grow', status: Math.random() > 0.5 ? 'On' : 'Off' },
+      ];
+      console.log('[Simulasi] Data Sensor:', this.sensorData);
+      console.log('[Simulasi] Data Aktuator:', this.actuatorData);
+    } else {
+      try {
+        const response = await fetch(`${this.ESP_SERVER}/data`);
+        const data = await response.json();
+        this.sensorData = data.sensors;
+        this.actuatorData = data.actuators;
+        console.log('[ESP32] Data Sensor:', this.sensorData);
+        console.log('[ESP32] Data Aktuator:', this.actuatorData);
+      } catch (error) {
+        console.error('[ESP32] Gagal mengambil data:', error);
+      }
+    }
+    this.requestUpdate();
+  }
+
+  async toggleActuator(tagname: string, state: string) {
+    console.log(`[Toggle Actuator] Mengubah ${tagname} ke ${state}`);
+
+    try {
+      await fetch(`${this.ESP_SERVER}/control`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tagname, state }),
+      });
+      console.log(`[ESP32] Perintah terkirim: ${tagname} -> ${state}`);
+      this.fetchData(); // Refresh data setelah perubahan
+    } catch (error) {
+      console.error('[ESP32] Gagal mengirim perintah:', error);
     }
   }
 
-  logout() {
-    AuthService.logout();
-    window.location.href = '#/auth/login';
+  handleToggleClick(row: any) {
+    const newState = row.status === 'On' ? 'Off' : 'On';
+    console.log(`[Button Click] ${row.tagname} -> ${newState}`);
+    this.toggleActuator(row.tagname, newState);
   }
 
   render() {
     return html`
       <app-navbar></app-navbar>
-      <main
-        class="p-8 my-14 min-h-screen"
-        style="background-image: url('./assets/blob-scene-haikei.svg');"
-      >
-        <h1 class="text-3xl font-extrabold text-blue-900">Dashboard</h1>
+      <main class="p-8 my-14 min-h-screen bg-gray-100">
+        <h1 class="text-3xl font-extrabold text-blue-900">
+          Dashboard Hidroponik
+        </h1>
         <p class="text-lg text-gray-700">
           Selamat datang, <strong>${this.username}</strong>!
         </p>
         <p class="text-gray-700">Role Anda: <strong>${this.role}</strong></p>
 
-        <!-- 📊 Tambahkan Chart ke Dashboard -->
-        <section
-          class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          <div class="bg-white p-4 rounded-lg shadow-md">
-            <h2 class="text-xl font-semibold text-gray-800 mb-3">
-              Grafik Penjualan
-            </h2>
-            <custom-chart type="line" .data="${this.chartData}"></custom-chart>
-          </div>
+        <!-- Tombol Simulasi -->
+        <div class="mt-4">
+          <button
+            @click=${() => {
+              this.simulationFlag = !this.simulationFlag;
+              console.log(`[Mode Simulasi] Status: ${this.simulationFlag}`);
+              this.fetchData();
+            }}
+            class="px-4 py-2 bg-blue-600 text-white rounded-md"
+          >
+            ${this.simulationFlag ? 'Gunakan Data Real' : 'Gunakan Simulasi'}
+          </button>
+        </div>
 
-          <div class="bg-white p-4 rounded-lg shadow-md">
-            <h2 class="text-xl font-semibold text-gray-800 mb-3">
-              Statistik Pengguna
-            </h2>
-            <custom-chart type="bar" .data="${this.chartData}"></custom-chart>
-          </div>
-
-          <div class="bg-white p-4 rounded-lg shadow-md">
-            <h2 class="text-xl font-semibold text-gray-800 mb-3">
-              Distribusi Produk
-            </h2>
-            <custom-chart type="pie" .data="${this.pieData}"></custom-chart>
+        <!-- Data Sensor -->
+        <section class="mt-6">
+          <h2 class="text-xl font-semibold text-gray-800 mb-3">Data Sensor</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            ${this.sensorData.map(
+              (sensor) => html`
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                  <h3 class="text-lg font-semibold text-gray-700">
+                    ${sensor.name}
+                  </h3>
+                  <p class="text-2xl font-bold text-blue-600">
+                    ${sensor.value}
+                  </p>
+                </div>
+              `
+            )}
           </div>
         </section>
 
-        <!-- 📋 Tabel Perangkat IoT -->
+        <!-- Kontrol Perangkat -->
         <section class="mt-8">
           <h2 class="text-xl font-semibold text-gray-800 mb-3">
-            Data Perangkat IoT
+            Kontrol Perangkat
           </h2>
-          <table-custom .data="${this.tableData}" enableAction></table-custom>
-        </section>
-
-        <!-- 📋 Tabel Karyawan -->
-        <section class="mt-8">
-          <h2 class="text-xl font-semibold text-gray-800 mb-3">
-            Data Karyawan
-          </h2>
-          <table-custom .data="${this.anotherTableData}"></table-custom>
+          <device-table
+            .data="${this.actuatorData}"
+            enableAction
+            @toggle-device=${(event: CustomEvent) =>
+              this.handleToggleClick(event.detail)}
+          ></device-table>
         </section>
       </main>
       <app-footer></app-footer>

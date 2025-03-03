@@ -11,7 +11,11 @@ import { customElement, property } from 'lit/decorators.js';
 @customElement('table-custom')
 export class TableCustom extends LitElement {
   /** Data JSON generik */
-  @property({ type: Array })
+  @property({
+    type: Array,
+    hasChanged: (newVal, oldVal) =>
+      JSON.stringify(newVal) !== JSON.stringify(oldVal),
+  })
   data: any[] = [];
 
   /** Opsi untuk menampilkan tombol aksi */
@@ -27,7 +31,14 @@ export class TableCustom extends LitElement {
     return this;
   }
 
+  updated(changedProperties: Map<string, unknown>) {
+    super.updated(changedProperties);
+    if (changedProperties.has('data')) {
+      console.log('📊 [table-custom] Data berubah, merender ulang:', this.data);
+    }
+  }
   render() {
+    console.log('📊 [table-custom] Rendering dengan data:', this.data);
     if (!this.data.length) {
       return html`
         <div class="bg-white p-6 rounded-lg shadow-md mt-4">

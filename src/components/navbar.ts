@@ -83,42 +83,71 @@ export class Navbar extends LitElement {
     this.navbarControl();
   }
 
-  /**
-   * Controls the behavior of the navigation menu.
-   * - Toggles the menu visibility when the hamburger button is clicked.
-   * - Closes the menu when a navigation link is clicked.
-   */
   navbarControl() {
     // Select the hamburger button and menu container
     const menuToggle = this.renderRoot.querySelector(
       '#menu-toggle'
     ) as HTMLElement;
     const menu = this.renderRoot.querySelector('#menu') as HTMLElement;
+    const userMenuLogout = this.renderRoot.querySelector('#user-menu-logout');
+    const userMenuLogoutButton = this.renderRoot.querySelector(
+      '#user-menu-logout-button'
+    );
 
     // Check if elements exist to avoid errors
-    if (!menuToggle || !menu) return;
+    if (!menuToggle || !menu || !userMenuLogout || !userMenuLogoutButton)
+      return;
 
-    // Add click listener to toggle menu visibility
+    // Toggle menu visibility on hamburger button click
     menuToggle.addEventListener('click', () => {
       menu.classList.toggle('hidden');
     });
 
-    // Add click listeners to close menu when a link is clicked
+    // Close menu when a navigation link is clicked
     menu.querySelectorAll('a').forEach((item) => {
       item.addEventListener('click', () => {
         menu.classList.add('hidden');
       });
     });
 
-    const userMenuLogout = this.renderRoot.querySelector('#user-menu-logout');
-    const userMenuLogoutButton = this.renderRoot.querySelector(
-      '#user-menu-logout-button'
-    );
-    // Check if elements exist to avoid errors
-    if (!userMenuLogout || !userMenuLogoutButton) return;
-
-    userMenuLogoutButton.addEventListener('click', () => {
+    // Toggle user menu on button click
+    userMenuLogoutButton.addEventListener('click', (event) => {
+      event.stopPropagation(); // Prevent immediate closing due to document click event
       userMenuLogout.classList.toggle('hidden');
+    });
+
+    // Close both menus when clicking outside
+    document.addEventListener('click', (event) => {
+      const target = event.target as Node;
+      if (!menu.contains(target) && !menuToggle.contains(target)) {
+        menu.classList.add('hidden');
+      }
+
+      if (
+        !userMenuLogout.contains(target) &&
+        !userMenuLogoutButton.contains(target)
+      ) {
+        userMenuLogout.classList.add('hidden');
+      }
+    });
+
+    // Close both menus when clicking outside
+    document.addEventListener('click', (event) => {
+      const menu = this.renderRoot.querySelector(
+        '#user-menu-logout'
+      ) as HTMLElement;
+      const button = this.renderRoot.querySelector(
+        '#user-menu-logout-button'
+      ) as HTMLElement;
+
+      if (menu && button) {
+        if (
+          !menu.contains(event.target as Node) &&
+          !button.contains(event.target as Node)
+        ) {
+          menu.classList.add('hidden');
+        }
+      }
     });
   }
 
@@ -130,6 +159,14 @@ export class Navbar extends LitElement {
     this.isLoggedIn = false;
     this.username = '';
     window.location.href = '#/auth/login';
+  }
+
+  getUserRoles() {
+    return StorageHelper.getItem('role') || 'No Role';
+  }
+
+  getUserToken() {
+    return StorageHelper.getItem('token') || 'No Token';
   }
 
   /**
@@ -208,13 +245,20 @@ export class Navbar extends LitElement {
                       ${this.username.charAt(0)}
                     </div>
                   </button>
+                  <!-- Dropdown User Detail & Logout -->
                   <div
                     id="user-menu-logout"
-                    class="hidden absolute right-0 mt-2 w-30 bg-white text-gray-800 shadow-lg rounded-md"
+                    class="hidden absolute right-0 mt-2 w-60 bg-white text-gray-800 shadow-lg rounded-md p-3 text-sm"
                   >
+                    <p><strong>Username:</strong> ${this.username}</p>
+                    <p><strong>Role:</strong> ${this.getUserRoles()}</p>
+                    <p><strong>Token:</strong> ${this.getUserToken()}</p>
+
+                    <hr class="my-2" />
+
                     <button
                       @click=${this.logout}
-                      class="block w-full text-left px-4 py-2 hover:bg-gray-200"
+                      class="block w-full text-left px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-md"
                     >
                       Logout
                     </button>
