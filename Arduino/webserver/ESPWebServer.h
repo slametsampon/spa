@@ -6,6 +6,8 @@
 #include <LittleFS.h>
 #include <ArduinoJson.h>
 #include "SensorManager.h"
+#include "ActuatorManager.h"
+#include "LEDManager.h"
 
 #define LED_BUILTIN 8  // LED bawaan ESP32-C3
 
@@ -21,8 +23,10 @@ private:
     IPAddress gateway; ///< Gateway IP
     IPAddress subnet; ///< Subnet mask
     WebServer server; ///< Objek WebServer
-    SensorManager* sensorManager; ///< Pointer ke objek SensorManager
     bool apSuccess;        ///< Status keberhasilan Access Point
+    SensorManager* sensorManager; ///< Pointer ke objek SensorManager
+    ActuatorManager* actuatorManager;  ///< Pointer ke objek ActuatorManager
+    LEDManager* ledManager;  ///< Pointer ke objek LEDManager
 
 public:
     /**
@@ -81,6 +85,18 @@ public:
      * @param manager Pointer ke objek SensorManager.
      */
     void setSensorManager(SensorManager* manager);
+
+    /**
+     * @brief Menghubungkan ESPWebServer dengan ActuatorManager.
+     * @param manager Pointer ke objek ActuatorManager.
+     */
+    void setActuatorManager(ActuatorManager* manager);
+
+    /**
+     * @brief Menghubungkan ESPWebServer dengan LEDManager.
+     * @param manager Pointer ke objek LEDManager.
+     */
+    void setLEDManager(LEDManager* manager);
 
 private:
     /**

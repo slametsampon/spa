@@ -10,6 +10,14 @@ void ESPWebServer::setSensorManager(SensorManager* manager) {
     sensorManager = manager;
 }
     
+void ESPWebServer::setActuatorManager(ActuatorManager* manager) {
+    actuatorManager = manager;
+}
+
+void ESPWebServer::setLEDManager(LEDManager* manager) {
+    ledManager = manager;
+}
+
 /**
  * @brief Memulai Access Point dan server web.
  */
@@ -74,30 +82,40 @@ void ESPWebServer::handleClient() {
 
 // ====== HANDLE DATA SENSOR & AKTUATOR (GET /data) ======
 void ESPWebServer::handleDataRequest() {
+    if (!sensorManager || !actuatorManager) {
+        server.send(500, "application/json", R"({"error":"SensorManager or ActuatorManager not initialized"})");
+        return;
+    }
+
     StaticJsonDocument<256> jsonDoc;
 
+    // Menambahkan data sensor
     JsonArray sensors = jsonDoc.createNestedArray("sensors");
+
     JsonObject sensor1 = sensors.createNestedObject();
     sensor1["name"] = "pH Air";
-    sensor1["value"] = String(random(50, 80) / 10.0, 2); 
+    sensor1["value"] = String(sensorManager->readPH(), 2);
 
     JsonObject sensor2 = sensors.createNestedObject();
     sensor2["name"] = "EC";
-    sensor2["value"] = String(random(12, 17) / 10.0, 2);
+    sensor2["value"] = String(sensorManager->readEC(), 2);
 
     JsonObject sensor3 = sensors.createNestedObject();
     sensor3["name"] = "Suhu Air";
-    sensor3["value"] = String(random(200, 250) / 10.0, 1) + "°C"; 
+    sensor3["value"] = String(sensorManager->readTemperature(), 1) + "°C";
 
+    // Menambahkan data aktuator
     JsonArray actuators = jsonDoc.createNestedArray("actuators");
+
     JsonObject actuator1 = actuators.createNestedObject();
     actuator1["tagname"] = "Pompa Air";
-    actuator1["status"] = (random(0, 2) == 1) ? "On" : "Off";
+    actuator1["status"] = actuatorManager->getActuatorStatus("Pompa Air");
 
     JsonObject actuator2 = actuators.createNestedObject();
     actuator2["tagname"] = "Lampu Grow";
-    actuator2["status"] = (random(0, 2) == 1) ? "On" : "Off";
+    actuator2["status"] = actuatorManager->getActuatorStatus("Lampu Grow");
 
+    // Konversi JSON ke string untuk dikirim ke frontend
     String jsonResponse;
     serializeJson(jsonDoc, jsonResponse);
 
@@ -106,6 +124,11 @@ void ESPWebServer::handleDataRequest() {
 
 // ====== HANDLE KONTROL AKTUATOR (POST /control) ======
 void ESPWebServer::handleControlRequest() {
+    if (!actuatorManager) {
+        server.send(500, "application/json", R"({"error":"ActuatorManager not initialized"})");
+        return;
+    }
+
     if (server.hasArg("plain") == false) {
         server.send(400, "text/plain", "Bad Request");
         return;
@@ -118,6 +141,7 @@ void ESPWebServer::handleControlRequest() {
     String tagname = doc["tagname"];
     String state = doc["state"];
 
+    actuatorManager->setActuatorState(tagname, state);
     Serial.printf("Mengontrol %s ke %s\n", tagname.c_str(), state.c_str());
 
     server.send(200, "application/json", R"({"status":"success"})");
@@ -145,18 +169,15 @@ void ESPWebServer::handleConfigRequest() {
  * @brief Indikasi status sistem dengan LED.
  */
 void ESPWebServer::updateLED() {
+    if (!ledManager) {
+        Serial.println("⚠️ LEDManager belum diinisialisasi!");
+        return;
+    }
+
     if (apSuccess) {
-        // Jika AP sukses, LED berkedip tiap 1 detik (standby mode)
-        digitalWrite(LED_BUILTIN, HIGH);
-        delay(1000);
-        digitalWrite(LED_BUILTIN, LOW);
-        delay(1000);
+        ledManager->blinkSuccess();  // LED berkedip lambat jika AP sukses
     } else {
-        // Jika gagal, LED berkedip cepat (200ms ON/OFF)
-        digitalWrite(LED_BUILTIN, HIGH);
-        delay(200);
-        digitalWrite(LED_BUILTIN, LOW);
-        delay(200);
+        ledManager->blinkError();    // LED berkedip cepat jika AP gagal
     }
 }
 
