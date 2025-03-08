@@ -3,8 +3,15 @@
 /**
  * @brief Konstruktor ESPWebServer.
  */
-ESPWebServer::ESPWebServer(const char* ssid, const char* password, IPAddress local_IP, IPAddress gateway, IPAddress subnet)
-    : ssid(ssid), password(password), local_IP(local_IP), gateway(gateway), subnet(subnet), server(80), apSuccess(false) {}
+ESPWebServer::ESPWebServer(const char* ssid_AP, const char* password_AP,
+                           const char* ssid_STA, const char* password_STA,
+                           IPAddress local_IP, IPAddress gateway, IPAddress subnet,
+                           IPAddress primaryDNS, IPAddress secondaryDNS)
+    : ssid(ssid_AP), password(password_AP),
+      ssid_STA(ssid_STA), password_STA(password_STA),
+      local_IP(local_IP), gateway(gateway), subnet(subnet),
+      primaryDNS(primaryDNS), secondaryDNS(secondaryDNS),
+      server(80), wifiSuccess(false) {}
 
 void ESPWebServer::setSensorManager(SensorManager* manager) {
     sensorManager = manager;
@@ -24,53 +31,79 @@ void ESPWebServer::setLEDManager(LEDManager* manager) {
 void ESPWebServer::begin() {
     Serial.begin(115200);
     delay(1000);
-    Serial.println("\nMemulai ESP32-C3 sebagai Access Point...");
-
-    // Inisialisasi LED
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, LOW);
 
-    // Konfigurasi alamat IP untuk AP Mode
-    if (!WiFi.softAPConfig(local_IP, gateway, subnet)) {
-        Serial.println("❌ Gagal mengatur IP Address!");
-        apSuccess = false;
-        return;
+    wifiSuccess = false; // Reset status
+
+    if (useStationMode) {
+        Serial.println("\n🔄 Memulai ESP32-C3 dalam Station Mode...");
+
+        WiFi.mode(WIFI_STA);
+        if (!WiFi.config(local_IP, gateway, subnet)) {
+            Serial.println("❌ Gagal mengatur IP statis untuk STA Mode!");
+        }
+
+        WiFi.begin(ssid_STA, password_STA);
+        Serial.print("🔗 Menghubungkan ke WiFi");
+
+        int retry = 20;  // Timeout 10 detik
+        while (WiFi.status() != WL_CONNECTED && retry-- > 0) {
+            delay(500);
+            Serial.print(".");
+        }
+
+        if (WiFi.status() == WL_CONNECTED) {
+            Serial.println("\n✅ Berhasil terhubung ke WiFi!");
+            Serial.print("📡 Alamat IP STA: ");
+            Serial.println(WiFi.localIP());
+            wifiSuccess = true;
+        } else {
+            Serial.println("\n❌ Gagal terhubung ke WiFi! Beralih ke AP Mode...");
+            useStationMode = false;
+        }
     }
 
-    // Konfigurasi ESP32 sebagai Access Point
-    if (WiFi.softAP(ssid, password)) {
-        Serial.println("✅ Access Point berhasil dibuat.");
-        apSuccess = true;
-    } else {
-        Serial.println("❌ Gagal membuat Access Point!");
-        apSuccess = false;
+    if (!useStationMode) {
+        Serial.println("\n📶 Memulai ESP32-C3 dalam Access Point Mode...");
+
+        WiFi.mode(WIFI_AP);
+        if (!WiFi.softAPConfig(local_IP, gateway, subnet)) {
+            Serial.println("❌ Gagal mengatur IP Address untuk AP Mode!");
+            return;
+        }
+
+        if (WiFi.softAP(ssid, password)) {
+            Serial.println("✅ Access Point berhasil dibuat!");
+            Serial.print("📡 Alamat IP AP: ");
+            Serial.println(WiFi.softAPIP());
+            wifiSuccess = true;
+        } else {
+            Serial.println("❌ Gagal membuat Access Point!");
+            return;
+        }
     }
 
-    // Jika AP berhasil, tampilkan alamat IP dan mulai server
-    if (apSuccess) {
-        IPAddress IP = WiFi.softAPIP();
-        Serial.print("📡 Alamat IP AP: ");
-        Serial.println(IP);
+    // Inisialisasi server
+    server.on("/", std::bind(&ESPWebServer::serveHTML, this));
+    server.on("/data", HTTP_GET, std::bind(&ESPWebServer::handleDataRequest, this));
+    server.on("/control", HTTP_POST, std::bind(&ESPWebServer::handleControlRequest, this));
+    server.on("/config", HTTP_POST, std::bind(&ESPWebServer::handleConfigRequest, this));
+    server.onNotFound([this]() { this->handleStaticFiles(server.uri()); });
 
-        // Routing Endpoint
-        server.on("/", std::bind(&ESPWebServer::serveHTML, this));
-        server.on("/data", HTTP_GET, std::bind(&ESPWebServer::handleDataRequest, this));
-        server.on("/control", HTTP_POST, std::bind(&ESPWebServer::handleControlRequest, this));
-        server.on("/config", HTTP_POST, std::bind(&ESPWebServer::handleConfigRequest, this));
-        server.onNotFound([this]() { this->handleStaticFiles(server.uri()); });
-
-        // Memulai server
-        server.begin();
-        Serial.println("🚀 Server web telah dimulai!");
-    }
+    server.begin();
+    Serial.println("🚀 Server web telah dimulai!");
 
     // Inisialisasi LittleFS
     if (!LittleFS.begin()) {
         Serial.println("❌ Gagal mount LittleFS!");
-        return;
     } else {
         Serial.println("✅ LittleFS berhasil dimount!");
     }
+}
+
+void ESPWebServer::setMode(bool stationMode) {
+    useStationMode = stationMode;
 }
 
 /**
@@ -174,10 +207,10 @@ void ESPWebServer::updateLED() {
         return;
     }
 
-    if (apSuccess) {
-        ledManager->blinkSuccess();  // LED berkedip lambat jika AP sukses
+    if (wifiSuccess) {
+        ledManager->blinkSuccess();  // LED berkedip lambat jika berhasil
     } else {
-        ledManager->blinkError();    // LED berkedip cepat jika AP gagal
+        ledManager->blinkError();    // LED berkedip cepat jika gagal
     }
 }
 

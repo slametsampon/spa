@@ -6,4 +6,5 @@ dist/
 arduino-examples/
 # Abaikan folder build di dalam semua subfolder Arduino/
 Arduino/*/build/
+Arduino/libraries/
 Arduino/driver/

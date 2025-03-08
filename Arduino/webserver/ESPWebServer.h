@@ -23,7 +23,12 @@ private:
     IPAddress gateway; ///< Gateway IP
     IPAddress subnet; ///< Subnet mask
     WebServer server; ///< Objek WebServer
-    bool apSuccess;        ///< Status keberhasilan Access Point
+    bool wifiSuccess; ///< Status keberhasilan koneksi Wi-Fi (AP atau STA)
+    bool useStationMode; ///< Mode Wi-Fi (true = STA, false = AP)
+    const char* ssid_STA; ///< SSID untuk Station Mode
+    const char* password_STA; ///< Password untuk Station Mode
+    IPAddress primaryDNS; ///< DNS Utama
+    IPAddress secondaryDNS; ///< DNS Sekunder
     SensorManager* sensorManager; ///< Pointer ke objek SensorManager
     ActuatorManager* actuatorManager;  ///< Pointer ke objek ActuatorManager
     LEDManager* ledManager;  ///< Pointer ke objek LEDManager
@@ -32,7 +37,10 @@ public:
     /**
      * @brief Konstruktor untuk menginisialisasi server dengan SSID, password, dan IP.
      */
-    ESPWebServer(const char* ssid, const char* password, IPAddress local_IP, IPAddress gateway, IPAddress subnet);
+    ESPWebServer(const char* ssid_AP, const char* password_AP, 
+                const char* ssid_STA, const char* password_STA,
+                IPAddress local_IP, IPAddress gateway, IPAddress subnet,
+                IPAddress primaryDNS, IPAddress secondaryDNS);
 
     /**
      * @brief Memulai server dan menginisialisasi WiFi.
@@ -79,6 +87,12 @@ public:
      * @brief Menangani request POST `/config` untuk mengubah mode simulasi.
      */
     void handleConfigRequest();
+
+    /**
+     * @brief Mengatur mode WiFi (AP atau STA).
+     * @param stationMode True untuk STA Mode, False untuk AP Mode.
+     */
+    void setMode(bool stationMode);
 
     /**
      * @brief Menghubungkan ESPWebServer dengan SensorManager.
